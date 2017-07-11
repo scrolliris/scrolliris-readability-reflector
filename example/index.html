@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Example</title>
+<style>
+body {
+  background: white;
+}
+#publication {
+  width: 1024px;
+  margin: auto;
+}
+</style>
+</head>
+<body>
+  <section id="publication">
+    <div class="meta">
+      <h2>PUBLICATION TITLE</h2>
+      <h3 class="subtitle">PUBLICATION SUB TITLE</h3>
+    </div>
+
+    <article id="article">
+      <div class="meta">
+        <span class="author">AUTHOR</span>
+      </div>
+
+      <div id="content">
+        <h1>TITLE</h1>
+        <h2 class="subtitle">SUB TITLE</h2>
+        <p class="outline">OUTLINE</p>
+        <div class="body">
+          <h3>SECTION TITLE</h3>
+          <p><span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam luctus elit eu bibendum iaculis. Interdum et malesuada fames ac ante ipsum primis in faucibus.</span><span>Curabitur quis nulla efficitur, dapibus risus blandit, rutrum magna.</span><span>Donec scelerisque placerat rutrum.</span><span>Donec facilisis mattis velit at iaculis.</span><span>Fusce at blandit nisi.</span><span>Sed non elit ut enim ultricies accumsan in sed tellus.</span><span id="s_6">Duis eleifend sollicitudin aliquam.</span><span id="s_7">Morbi eget dui non orci interdum ullamcorper.</span><span id="s_8">Nullam sollicitudin arcu eget mi facilisis egestas.</span><span id="s_9">Nulla auctor risus arcu, nec ultrices orci tincidunt tincidunt.</span><span>Sed pulvinar pulvinar nulla.</span><span>Cras vestibulum lectus magna, sit amet convallis justo luctus et.</span><span>Phasellus bibendum aliquet augue, eu finibus metus pharetra in.</span><span>Nulla a rutrum dolor.</span><span>Lorem ipsum</span></p>
+          <p><span>Curabitur hendrerit velit lacus.</span><span>Pellentesque posuere dolor sit amet congue semper.</span><span>Pellentesque libero urna, sodales ac quam lobortis, lacinia tempor diam.</span><span>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</span><span>Maecenas eu erat nec enim feugiat scelerisque.</span><span>Fusce vel dolor eu neque viverra sodales.</span><span>Pellentesque risus nisl, faucibus quis dui a, vestibulum aliquet dui.</span><span>In in ipsum ultrices, laoreet justo non, eleifend lorem.</span><span>Donec interdum, quam in interdum pharetra, augue velit pharetra turpis, ut venenatis felis augue vel metus.</span><span>Fusce justo tortor, fermentum et tempor sed, sodales in leo.</span><span>Suspendisse in sapien faucibus, porttitor est vitae, mattis nisl.</span><span>Maecenas sollicitudin, neque at consectetur convallis, ex nisi ullamcorper ipsum, ac ultricies orci libero non massa.</span></p>
+          <img src="./image.png" width="200px" height="160px">
+
+          <h3>SECTION TITLE</h3>
+          <p><span>Maecenas rutrum magna dolor.</span><span>Vestibulum ac ante dictum, varius nunc ut, euismod magna.</span><span>Sed et fringilla sapien, ut elementum arcu.</span><span>Fusce ac auctor purus.</span><span>Aliquam pretium at urna pharetra porttitor.</span><span>In sem mi, posuere eu augue in, laoreet scelerisque neque.</span><span>Vivamus tempus fringilla nunc eu fringilla.</span><span>Vivamus vulputate fermentum sem.</span><span>Donec ut tortor nulla.</span><span>Donec laoreet nisl pellentesque finibus facilisis.</span><span>Fusce commodo ut lectus nec eleifend.</span></p>
+          <p><span>Ut ut odio ut justo dictum pulvinar.</span><span>Duis sed nisi ac nunc sollicitudin facilisis non vel velit.</span><span>In sit amet risus orci.</span><span>Pellentesque pretium nec sem sit amet sodales.</span><span>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</span><span>Etiam nec massa neque.</span><span>Praesent sagittis est non libero rutrum, et placerat lectus gravida.</span></p>
+          <table>
+            <thead>
+              <tr>
+                <th>NAME</th>
+                <th>TAG</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Component</th>
+                <th><code>h1</code>, <code>h2</code>, <code>div</code></th>
+              </tr>
+              <tr>
+                <th>Paragraph</th>
+                <th><code>p</code></th>
+              </tr>
+              <tr>
+                <th>Material</th>
+                <th><code>img</code>, <code>table</code>, <code>pre</code>, <code>quote</code></th>
+              </tr>
+              <tr>
+                <th>Sentence</th>
+                <th><code>span</code></th>
+              </tr>
+            </tbody>
+          </table>
+          <p><span>Etiam tristique fermentum dolor, ut interdum risus pulvinar eu.</span><span>Morbi ante tortor, sagittis vel condimentum a, sollicitudin eu libero.</span><span>Mauris et felis maximus velit facilisis scelerisque ac a massa.</span><span>Fusce ac maximus purus.</span><span>Etiam sollicitudin libero sed lorem auctor gravida.</span><span>Vivamus fermentum tempor semper.</span><span>Mauris placerat tincidunt euismod.</span><span>Nunc commodo et tortor vel accumsan.</span><span>Quisque interdum nec sem nec tempus.</span><span>Integer venenatis iaculis justo.</span><span>Suspendisse eleifend urna ut libero aliquet, a luctus leo dictum.</span><span>Phasellus arcu erat, consectetur non neque et, varius hendrerit purus.</span><span>Sed vitae mattis est.</span><span>Morbi ac venenatis odio.</span><span>Morbi elementum lectus non dolor tincidunt facilisis.</span></p>
+        </div>
+      </div>
+    </article>
+  </section>
+  <script>
+// tracker script (loading a script from local siret project)
+(function(d, w) {
+  var config = {
+        projectId: 'PROJECT_ID'
+      , scrollKey: 'SCROLL_KEY'
+      }
+    , settings = {
+        endpointURL: 'http://localhost:3000/track?projectId='+config.projectId
+      }
+    , options = {}
+    ;
+  var a,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='../../siret/dist/scrolliris-readability-tracker-browser.js';k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(config,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
+}(document, window));
+
+// reflector widget
+(function(d, w) {
+  var config = {
+        projectId: 'PROJECT_ID'
+      , widgetKey: 'WIDGET_KEY'
+      }
+    , settings = {
+        endpointURL: 'http://localhost:3000/fetch?projectId='+config.projectId
+      }
+    , options = {}
+    ;
+  var s=w.Sihl,t={config:config,settings:settings,options:options};if(typeof s==='function'){s('update',t);}else{var i=function(){i.c(arguments)};i.q=[];i.c=function(a){i.q.push(a);};w.Sihl=i;function l(){i('init',t);var k=d.createElement('script');k.type='text/javascript';k.async=true;k.src='../dist/scrolliris-readability-reflector-browser.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(k,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}
+})(document, window);
+  </script>
+</body>
