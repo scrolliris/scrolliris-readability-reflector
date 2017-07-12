@@ -33,12 +33,17 @@ function collectElements(article, selectors) {
 
 function fetchResultData(endpointURL, resolveCallback, rejectCallback) {
   var getJSON = function getJSON(url) {
+    var emptyData = { 'p': [] };
     return new Promise(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xhr.responseType = 'text';
+      xhr.onerror = function () {
+        var status = xhr.status;
+        reject(emptyData);
+      };
       xhr.onload = function () {
         var status = xhr.status,
             response = xhr.response;
@@ -46,7 +51,8 @@ function fetchResultData(endpointURL, resolveCallback, rejectCallback) {
           response = response.replace(/^\]\)\}while\(1\);<\/x>/, '');
           resolve(JSON.parse(response));
         } else {
-          reject(status);
+          console.error('[ERROR] GET status: ', status);
+          reject(emptyData);
         }
       };
       xhr.send();
@@ -54,8 +60,8 @@ function fetchResultData(endpointURL, resolveCallback, rejectCallback) {
   };
   return getJSON(endpointURL).then(function (data) {
     return resolveCallback(data);
-  }, function (status) {
-    return rejectCallback(status);
+  }, function (data) {
+    return rejectCallback(data);
   });
 }
 
@@ -187,7 +193,7 @@ function drawCanvas(canvas, html, width, height, margin) {
   var elements = collectElements(article, selectors),
       styles = doc.querySelectorAll('style') || [];
 
-  fetchResultData(settings.endpointURL, function (data) {
+  var draw = function draw(data) {
     var html = buildHTML(data, elements, styles),
         canvas = makeCanvas(doc);
 
@@ -196,8 +202,15 @@ function drawCanvas(canvas, html, width, height, margin) {
         height = doc.body.clientHeight * 0.8,
         margin = -1 * (height - doc.body.clientHeight * 0.4 - 280);
     drawCanvas(canvas, html, width, height, margin);
-  }, function (status) {
-    console.error(status);
+  };
+
+  fetchResultData(settings.endpointURL, function (data) {
+    // resolve
+    draw(data);
+  }, function (data) {
+    // reject
+    // FIXME
+    draw(data);
   });
 })(window.parent.document, window.SihlContext);
 
