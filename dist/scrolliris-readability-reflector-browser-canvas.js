@@ -37,7 +37,7 @@ function fetchResultData(endpointURL, resolveCallback, rejectCallback) {
     return new Promise(function (resolve, reject) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
-      xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+      xhr.setRequestHeader('Accept', 'application/json');
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xhr.responseType = 'text';
       xhr.onerror = function () {
