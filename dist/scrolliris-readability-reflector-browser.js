@@ -36,8 +36,8 @@ function insertStyle() {
   style.type = 'text/css';
   style.appendChild(document.createTextNode(cssContent));
 
-  var s = document.getElementsByTagName('style')[0];
-  s.parentNode.insertBefore(style, s);
+  var h = document.getElementsByTagName('head')[0];
+  h.appendChild(style);
 }
 
 (function () {
