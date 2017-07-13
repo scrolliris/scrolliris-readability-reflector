@@ -1,5 +1,6 @@
 14 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.3 (v0.0.3)
+	* Release 0.0.3 (v0.0.3), 0.0.4 (v0.0.4)
+	* Fix dependency <style> tag
 	* Update Request Headers
 
 12 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
