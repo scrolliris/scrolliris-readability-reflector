@@ -1,4 +1,8 @@
+14 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
+	* Release 0.0.3 (v0.0.3)
+	* Update Request Headers
+
 12 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
- * Release 0.0.2 (v0.0.2), 0.0.1 (v0.0.1)
- * Add empty response handling
- * Initial commit
+	* Release 0.0.2 (v0.0.2), 0.0.1 (v0.0.1)
+	* Add empty response handling
+	* Initial commit
