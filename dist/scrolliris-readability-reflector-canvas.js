@@ -39,6 +39,7 @@ function fetchResultData(endpointURL, resolveCallback, rejectCallback) {
       xhr.open('GET', url, true);
       xhr.setRequestHeader('Accept', 'application/json');
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      xhr.setRequestHeader('X-CSRF-Token', '');
       xhr.responseType = 'text';
       xhr.onerror = function () {
         var status = xhr.status;
@@ -170,10 +171,7 @@ function drawCanvas(canvas, html, width, height, margin) {
 
   if (ctx.hasOwnProperty('config') && _typeof(ctx.config) === 'object') {
     config = ctx['config'];
-    if (!config.projectId || !config.widgetKey) {
-      console.error('projectId and widgetKey are both required');
-      return false;
-    }
+    // pass
   }
   if (ctx.hasOwnProperty('settings') && _typeof(ctx.options) === 'object') {
     settings = ctx['settings'];
@@ -212,7 +210,7 @@ function drawCanvas(canvas, html, width, height, margin) {
     // FIXME
     draw(data);
   });
-})(window.parent.document, window.SihlContext);
+})(window.parent.document, (window.ScrollirisReadabilityReflector || {}).Context);
 
 },{"rasterizehtml":39}],2:[function(require,module,exports){
 // UMD header
@@ -7216,4 +7214,4 @@ exports.serializeToString = function (node) {
 
 },{}]},{},[1]);
 
-//# sourceMappingURL=scrolliris-readability-reflector-browser-canvas.js.map
+//# sourceMappingURL=scrolliris-readability-reflector-canvas.js.map

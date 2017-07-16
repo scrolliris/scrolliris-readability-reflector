@@ -1,51 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _index = require('./index');
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var currentScript = document.currentScript;
-
-var WidgetProxy = function () {
-  function WidgetProxy(config) {
-    var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    _classCallCheck(this, WidgetProxy);
-
-    context.currentScript = currentScript;
-    this._widget = new _index2.default(config, context);
-  }
-
-  _createClass(WidgetProxy, [{
-    key: 'render',
-    value: function render() {
-      return this._widget.render();
-    }
-  }]);
-
-  return WidgetProxy;
-}();
-
-var ScrollirisReadabilityReflector = {
-  Widget: WidgetProxy
-};
-
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = ScrollirisReadabilityReflector;
-}
-
-window.ScrollirisReadabilityReflector = ScrollirisReadabilityReflector;
-
-},{"./index":2}],2:[function(require,module,exports){
-'use strict';
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -124,4 +79,4 @@ exports.default = Widget;
 
 },{}]},{},[1]);
 
-//# sourceMappingURL=scrolliris-readability-reflector-browser.js.map
+//# sourceMappingURL=scrolliris-readability-reflector.js.map

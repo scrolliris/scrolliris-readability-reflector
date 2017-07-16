@@ -87,30 +87,36 @@ var runUglify = function(filename) {
 
 var prefix = 'scrolliris-readability-'
 
-gulp.task('build:browserify:widget', ['env'],
-  runBrowserify('widget.js', prefix + 'reflector-browser.js'));
+gulp.task('build:browserify:index', ['env'],
+  runBrowserify('index.js', prefix + 'reflector.js'));
+
+gulp.task('build:browserify:browser', ['env'],
+  runBrowserify('browser.js', prefix + 'reflector-browser.js'));
 
 gulp.task('build:browserify:canvas', ['env'],
-  runBrowserify('canvas.js', prefix + 'reflector-browser-canvas.js'));
+  runBrowserify('canvas.js', prefix + 'reflector-canvas.js'));
 
 gulp.task('build:compileCSS:canvas', function () {
   return gulp.src('./lib/canvas.styl')
     .pipe(stylus())
     .pipe(rename(function(file) {
-      file.basename = prefix + 'reflector-browser-canvas';
+      file.basename = prefix + 'reflector-canvas';
     }))
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('build:uglify:widget', ['env'],
+gulp.task('build:uglify:index', ['env'],
+  runUglify(prefix + 'reflector.js'));
+
+gulp.task('build:uglify:browser', ['env'],
   runUglify(prefix + 'reflector-browser.js'));
 
 gulp.task('build:uglify:canvas', ['env'],
-  runUglify(prefix + 'reflector-browser-canvas.js'));
+  runUglify(prefix + 'reflector-canvas.js'));
 
 gulp.task('build:minify:canvas', ['env'], function () {
   return pump([
-      gulp.src(['./dist/' + prefix + 'reflector-browser-canvas.css'])
+      gulp.src(['./dist/' + prefix + 'reflector-canvas.css'])
     , sourcemaps.init({
         loadMaps: true
       })
@@ -121,10 +127,17 @@ gulp.task('build:minify:canvas', ['env'], function () {
     ]);
 });
 
-gulp.task('build:widget', function() {
+gulp.task('build:index', function() {
   return sequence(
-    'build:browserify:widget'
-  , 'build:uglify:widget'
+    'build:browserify:index'
+  , 'build:uglify:index'
+  );
+});
+
+gulp.task('build:browser', function() {
+  return sequence(
+    'build:browserify:browser'
+  , 'build:uglify:browser'
   );
 });
 
@@ -137,7 +150,7 @@ gulp.task('build:canvas', function() {
   );
 });
 
-gulp.task('build', ['build:widget', 'build:canvas']);
+gulp.task('build', ['build:browser', 'build:index', 'build:canvas']);
 
 
 // -- [test tasks]

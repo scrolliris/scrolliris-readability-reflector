@@ -70,11 +70,11 @@ body {
     </article>
   </section>
   <script>
-// tracker script (loading a script from local siret project)
+// tracker client script
 (function(d, w) {
   var config = {
         projectId: 'PROJECT_ID'
-      , scrollKey: 'SCROLL_KEY'
+      , apiKey: 'API_KEY'
       }
     , settings = {
         endpointURL: 'http://localhost:3000/track?projectId='+config.projectId
@@ -84,18 +84,41 @@ body {
   var a,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='../../siret/dist/scrolliris-readability-tracker-browser.js';k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(config,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
 }(document, window));
 
-// reflector widget
+// reflector canvas widget
 (function(d, w) {
   var config = {
         projectId: 'PROJECT_ID'
-      , widgetKey: 'WIDGET_KEY'
+      , apiKey: 'API_KEY'
       }
     , settings = {
-        endpointURL: 'http://localhost:3000/fetch?projectId='+config.projectId
+        endpointURL: 'http://localhost:3000/fetch?projectId='+config.projectId+'&api_key='+config.apiKey
       }
     , options = {}
     ;
-  var s=w.Sihl,t={config:config,settings:settings,options:options};if(typeof s==='function'){s('update',t);}else{var i=function(){i.c(arguments)};i.q=[];i.c=function(a){i.q.push(a);};w.Sihl=i;function l(){i('init',t);var k=d.createElement('script');k.type='text/javascript';k.async=true;k.src='../dist/scrolliris-readability-reflector-browser.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(k,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}
-})(document, window);
+
+  var a,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src='../dist/scrolliris-readability-reflector-browser.js';k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(config,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
+}(document, window));
   </script>
+
+  <!--<script src="../dist/scrolliris-readability-reflector-browser.js"></script>-->
+  <!--<script>
+// standard usage
+(function(reflector) {
+  var config = {
+        projectId: 'PROJECT_ID'
+      , apiKey: 'API_KEY'
+      }
+    , settings = {
+        endpointURL: 'http://localhost:3000/fetch?projectId='+config.projectId+'&api_key='+config.apiKey
+      }
+    , options = {}
+    ;
+  var widget = new reflector.Widget(config, {
+    settings: settings
+  , options: options
+  });
+  widget.render();
+}(window.ScrollirisReadabilityReflector));
+  </script>-->
 </body>
+</html>

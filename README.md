@@ -21,9 +21,11 @@ Sihl; ScrollirIs Honest readability refLector
 
 TODO
 
-settings takes...
+See `example/index.html`.
 
 ```
+settings takes...
+
 * endpointURL
 * canvasJS
 * canvasCSS
