@@ -65,11 +65,7 @@ var runBrowserify = function(inputFile, outputFile) {
       .bundle()
       .pipe(source(outputFile))
       .pipe(buffer())
-      .pipe(sourcemaps.init({
-        loadMaps: true
-      }))
       .on('error', util.log)
-      .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('./dist/'));
   };
 };
@@ -78,8 +74,12 @@ var runUglify = function(filename) {
   return function() {
     return pump([
         gulp.src(['./dist/' + filename])
+      , sourcemaps.init({
+          loadMaps: true
+        })
       , uglify()
       , rename({suffix: '.min'})
+      , sourcemaps.write('./')
       , gulp.dest('./dist/')
       ]);
   };

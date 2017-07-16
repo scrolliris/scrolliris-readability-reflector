@@ -78,5 +78,3 @@ var Widget = function () {
 exports.default = Widget;
 
 },{}]},{},[1]);
-
-//# sourceMappingURL=scrolliris-readability-reflector.js.map

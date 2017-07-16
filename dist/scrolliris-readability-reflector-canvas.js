@@ -7213,5 +7213,3 @@ exports.serializeToString = function (node) {
 };
 
 },{}]},{},[1]);
-
-//# sourceMappingURL=scrolliris-readability-reflector-canvas.js.map
