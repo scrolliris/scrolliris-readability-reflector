@@ -103,16 +103,15 @@ function buildHTML(data, elements, styles) {
     return n.outerHTML;
   }).join('');
   html += '</body></html>';
-
   return html;
 }
 
-function makeCanvas(doc) {
+function makeCanvas(width, height) {
   var container = document.getElementById('scrolliris_canvas_container'),
       canvas = document.createElement('canvas');
   canvas.setAttribute('id', 'scrolliris_canvas');
-  canvas.setAttribute('width', doc.body.clientWidth * 0.6);
-  canvas.setAttribute('height', doc.body.clientHeight * 0.4);
+  canvas.setAttribute('width', width * 0.5);
+  canvas.setAttribute('height', height * 0.5);
   container.appendChild(canvas);
   return canvas;
 }
@@ -191,15 +190,25 @@ function drawCanvas(canvas, html, width, height, margin) {
   var elements = collectElements(article, selectors),
       styles = doc.querySelectorAll('style') || [];
 
+  // NOTE:
+  // Use <article>'s clientHeight?
+  var elm = doc.documentElement;
+  var docWidth = Math.max(doc.body.clientWidth, elm.clientWidth, elm.scrollWidth);
+  var docHeight = Math.max(doc.body.clientHeight, elm.clientHeight, elm.scrollHeight);
+
   var draw = function draw(data) {
     var html = buildHTML(data, elements, styles),
-        canvas = makeCanvas(doc);
-
+        canvas = makeCanvas(docWidth, docHeight);
     // draw minimap
-    var width = doc.body.clientWidth * 0.6,
-        height = doc.body.clientHeight * 0.8,
-        margin = -1 * (height - doc.body.clientHeight * 0.4 - 280);
-    drawCanvas(canvas, html, width, height, margin);
+    var canvasHeight = 290 // container main area
+    ,
+        headerHeight = 22,
+        footerHeiht = 22,
+        frameMargin = 9 // {left|bottom} 9px
+    ,
+        scale = 0.5;
+    var margin = -1 * (docHeight * scale / canvasHeight * 100) + (headerHeight + footerHeiht + frameMargin);
+    drawCanvas(canvas, html, docWidth, docHeight, margin);
   };
 
   fetchResultData(settings.endpointURL, function (data) {
