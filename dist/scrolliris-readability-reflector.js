@@ -38,9 +38,14 @@ var Widget = function () {
 
       var currentScript = ctx.currentScript || document.currentScript,
           scriptSrc = currentScript.getAttribute('src') || '';
-      // assumes -canvas.{js|css} are both hosted in same location -browser.js
-      var canvasJS = (ctx.settings || {}).canvasJS || scriptSrc.replace(/-browser(\.min)?\.js(\?)?/, '-canvas$1.js$2').toString(),
-          canvasCSS = (ctx.settings || {}).canvasCSS || scriptSrc.replace(/-browser(\.min)?\.js(\?)?/, '-canvas$1.css$2').toString();
+      // This part assumes -canvas.{js|css} are both hosted in same location
+      // as -browser.js.
+      //
+      // reflector.js         --> reflector-canvas.js,.css
+      // reflector-browser.js --> reflector-canvas.js,.css
+      var reflectorJSRegex = /(-browser)?(\.min)?\.js(\?)?/;
+      var canvasJS = (ctx.settings || {}).canvasJS || scriptSrc.replace(reflectorJSRegex, '-canvas$2.js$3').toString(),
+          canvasCSS = (ctx.settings || {}).canvasCSS || scriptSrc.replace(reflectorJSRegex, '-canvas$2.css$3').toString();
 
       if (canvasJS === '') {
         console.error('canvasJS is missing');
