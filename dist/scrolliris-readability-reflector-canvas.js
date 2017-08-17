@@ -31,7 +31,11 @@ function collectElements(article, selectors) {
   return article.querySelectorAll(q.slice(1));
 }
 
-function fetchResultData(endpointURL, resolveCallback, rejectCallback) {
+function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback) {
+  var credentials = { csrfToken: csrfToken };
+  if (!credentials.csrfToken) {
+    credentials.csrfToken = '';
+  }
   var getJSON = function getJSON(url) {
     var emptyData = { 'p': [] };
     return new Promise(function (resolve, reject) {
@@ -39,7 +43,9 @@ function fetchResultData(endpointURL, resolveCallback, rejectCallback) {
       xhr.open('GET', url, true);
       xhr.setRequestHeader('Accept', 'application/json');
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-      xhr.setRequestHeader('X-CSRF-Token', '');
+      if (csrfToken !== '') {
+        xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+      }
       xhr.responseType = 'text';
       xhr.onerror = function () {
         var status = xhr.status;
@@ -211,7 +217,7 @@ function drawCanvas(canvas, html, width, height, margin) {
     drawCanvas(canvas, html, docWidth, docHeight, margin);
   };
 
-  fetchResultData(settings.endpointURL, function (data) {
+  fetchResultData(settings.endpointURL, settings.csrfToken, function (data) {
     // resolve
     draw(data);
   }, function (data) {
