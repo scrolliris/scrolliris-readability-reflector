@@ -1,3 +1,7 @@
+17 Aug 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
+	* Release 0.0.8 (v0.0.8)
+	* Add csrfToken as optional argument
+
 21 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
 	* Release 0.0.6 (v0.0.6), 0.0.7 (v0.0.7)
 	* Fix canvas asset url replacing
