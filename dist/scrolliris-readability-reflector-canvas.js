@@ -43,8 +43,8 @@ function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback
       xhr.open('GET', url, true);
       xhr.setRequestHeader('Accept', 'application/json');
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-      if (csrfToken !== '') {
-        xhr.setRequestHeader('X-CSRF-Token', csrfToken);
+      if (credentials.csrfToken !== '') {
+        xhr.setRequestHeader('X-CSRF-Token', credentials.csrfToken);
       }
       xhr.responseType = 'text';
       xhr.onerror = function () {
