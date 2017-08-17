@@ -27,6 +27,7 @@ See `example/index.html`.
 settings takes...
 
 * endpointURL
+* csrfToken
 * canvasJS
 * canvasCSS
 ```
