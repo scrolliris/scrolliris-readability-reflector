@@ -78,7 +78,7 @@ body {
       , apiKey: 'WRITE_KEY'
       }
     , settings = {
-        endpointURL: 'http://localhost:3000/projects/'+config.projectId+'/events/read'
+        endpointURL: 'http://localhost:3000/track?projectId='+config.projectId+'&api_key='+config.apiKey
       , debug: true
       }
     , options = {}
@@ -99,18 +99,18 @@ body {
       , apiKey: 'READ_KEY'
       }
     , settings = {
-        endpointURL: 'http://localhost:3000/projects/'+config.projectId+'/events/read?api_key='+config.apiKey
+        endpointURL: 'http://localhost:3000/fetch?projectId='+config.projectId+'&api_key='+config.apiKey
       , debug: false
       }
     , options = {}
     ;
   /* ----- */
   // local server
-  var reflectorURL = 'http://localhost:8080/projects/'+config.projectId+'/reflector.js?api_key='+config.apiKey;
+  //var reflectorURL = 'http://localhost:8080/projects/'+config.projectId+'/reflector.js?api_key='+config.apiKey;
   // script
-  //var reflectorURL = '../dist/scrolliris-readability-reflector-canvas.js';
+  var reflectorURL = '../dist/scrolliris-readability-reflector-browser.js';
   /* ----- */
-  var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src=reflectorURL;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(config,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
+  var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src=reflectorURL;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
 })(document, window);
   </script>
 
