@@ -86,9 +86,6 @@ function buildHTML(data, elements, styles) {
   var colors1 = [// pastel 12
   '#9e0142', '#d0384d', '#ee6445', '#fa9c58', '#fdcd7b', '#fef0a7', '#f3faad', '#d0ec9c', '#98d5a4', '#5cb7a9', '#3582ba', '#5e4fa2'];
 
-  var colors2 = [// monochromic 9
-  '#fafafa', '#f0f0f0', '#d9d9d9', '#bdbdbd', '#969696', '#737373', '#525252', '#252525', '#000000'];
-
   var colors = colors0 // heatmap (for now)
   ,
       pIndex = 0;
@@ -99,7 +96,12 @@ function buildHTML(data, elements, styles) {
         // BETA only paragraph support
         var v = data['p'][String(pIndex)];
         if (v !== undefined) {
-          var color = shadeColor(colors[parseInt(v, 10).toString()], 0.5);
+          try {
+            i = parseInt(parseFloat(v) * 10, 10);
+            var _color = shadeColor(colors[i], 0.5);
+          } catch (_e) {
+            color = '#ffffff';
+          }
           n.style.background = color;
           n.style.backgroundColor = 'rgba(' + color + ', 0.9)';
         }
