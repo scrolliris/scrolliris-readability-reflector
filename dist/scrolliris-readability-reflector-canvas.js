@@ -96,9 +96,10 @@ function buildHTML(data, elements, styles) {
         // BETA only paragraph support
         var v = data['p'][String(pIndex)];
         if (v !== undefined) {
+          var color = void 0;
           try {
             i = parseInt(parseFloat(v) * 10, 10);
-            var _color = shadeColor(colors[i], 0.5);
+            color = shadeColor(colors[i], 0.5);
           } catch (_e) {
             color = '#ffffff';
           }
