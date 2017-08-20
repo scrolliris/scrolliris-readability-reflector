@@ -97,7 +97,7 @@ function buildHTML(data, elements, styles) {
     if (n.nodeName !== 'IMG') {
       if (n.nodeName === 'P' && Array.isArray(data['p'])) {
         // BETA only paragraph support
-        var v = data['p'][pIndex];
+        var v = data['p'][String(pIndex)];
         if (v !== undefined) {
           var color = shadeColor(colors[parseInt(v, 10).toString()], 0.5);
           n.style.background = color;
