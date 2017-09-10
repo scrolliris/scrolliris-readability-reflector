@@ -42,7 +42,6 @@ function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.setRequestHeader('Accept', 'application/json');
-      xhr.setRequestHeader('Accept-Encoding', 'deflate');
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       if (credentials.csrfToken !== '') {
         xhr.setRequestHeader('X-CSRF-Token', credentials.csrfToken);
