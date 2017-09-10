@@ -1,4 +1,5 @@
 11 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
+	* Release 0.0.15
 	* Revert change adding `Accept-Encoding` (it's forbidden header)
 	* Release 0.0.14
 	* Add Accept-Encoding header as deplate for xhr
