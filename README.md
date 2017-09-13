@@ -2,12 +2,15 @@
 
 `/síl/`
 
-[![build status](https://gitlab.com/lupine-software/sihl/badges/master/build.svg)](
+[![build status](
+https://gitlab.com/lupine-software/sihl/badges/master/build.svg)](
 https://gitlab.com/lupine-software/sihl/commits/master) [![coverage report](
 https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg)](
 https://gitlab.com/lupine-software/sihl/commits/master)
 
-![Sihl Widget](https://gitlab.com/lupine-software/sihl/raw/master/sihl/example/img/sihl-widget.png)
+![Sihl Widget](
+https://gitlab.com/lupine-software/sihl/raw/master/example/img/sihl-widget.png)
+
 
 ```txt
          _      _
@@ -19,7 +22,8 @@ https://gitlab.com/lupine-software/sihl/commits/master)
 Sihl; ScrollirIs Honest readability refLector
 ```
 
-The browser widget of [https://about.scrolliris.com/](https://about.scrolliris.com/).
+The browser widget of [https://about.scrolliris.com/](
+https://about.scrolliris.com/).
 
 
 ## Requirements
