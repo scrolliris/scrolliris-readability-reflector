@@ -4,6 +4,7 @@
 .karma.conf.js
 gulpfile.js
 test
+tmp
 example
 coverage
 node_modules
