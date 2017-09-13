@@ -1,3 +1,6 @@
+13 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
+	* Rename dist as dst
+
 11 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
 	* Release 0.0.15
 	* Revert change adding `Accept-Encoding` (it's forbidden header)
