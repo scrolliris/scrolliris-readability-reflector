@@ -2,12 +2,29 @@
 
 `/síl/`
 
-[![build status]()]() [![coverage report]()]()
+[![build status](https://gitlab.com/lupine-software/sihl/badges/master/build.svg)](
+https://gitlab.com/lupine-software/sihl/commits/master) [![coverage report](
+https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg)](
+https://gitlab.com/lupine-software/sihl/commits/master)
 
+![Sihl Widget](https://gitlab.com/lupine-software/sihl/raw/master/sihl/example/img/sihl-widget.png)
 
 ```txt
+         _      _
+  () o  | |    | |
+  /\    | |    | |
+ /  \|  |/ \   |/
+/(__/|_/|   |_/|__/
+
 Sihl; ScrollirIs Honest readability refLector
 ```
+
+The browser widget of [https://about.scrolliris.com/](https://about.scrolliris.com/).
+
+
+## Requirements
+
+* Node.js `7.8.0` (build)
 
 
 ## Install
