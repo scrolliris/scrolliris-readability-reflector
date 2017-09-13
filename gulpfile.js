@@ -42,7 +42,7 @@ gulp.task('env', function(done) {
 
 gulp.task('clean', function() {
   return gulp.src([
-      './dist/*'
+      './dst/*'
     , './tmp/**/*'
     , './coverage/*'
     ], {read: false})
@@ -66,21 +66,21 @@ var runBrowserify = function(inputFile, outputFile) {
       .pipe(source(outputFile))
       .pipe(buffer())
       .on('error', util.log)
-      .pipe(gulp.dest('./dist/'));
+      .pipe(gulp.dest('./dst/'));
   };
 };
 
 var runUglify = function(filename) {
   return function() {
     return pump([
-        gulp.src(['./dist/' + filename])
+        gulp.src(['./dst/' + filename])
       , sourcemaps.init({
           loadMaps: true
         })
       , uglify()
       , rename({suffix: '.min'})
       , sourcemaps.write('./')
-      , gulp.dest('./dist/')
+      , gulp.dest('./dst/')
       ]);
   };
 };
@@ -102,7 +102,7 @@ gulp.task('build:compileCSS:canvas', function () {
     .pipe(rename(function(file) {
       file.basename = prefix + 'reflector-canvas';
     }))
-    .pipe(gulp.dest('./dist/'));
+    .pipe(gulp.dest('./dst/'));
 });
 
 gulp.task('build:uglify:index', ['env'],
@@ -116,14 +116,14 @@ gulp.task('build:uglify:canvas', ['env'],
 
 gulp.task('build:minify:canvas', ['env'], function () {
   return pump([
-      gulp.src(['./dist/' + prefix + 'reflector-canvas.css'])
+      gulp.src(['./dst/' + prefix + 'reflector-canvas.css'])
     , sourcemaps.init({
         loadMaps: true
       })
     , minify({compatibility: 'ie8'})
     , rename({suffix: '.min'})
     , sourcemaps.write('./')
-    , gulp.dest('./dist')
+    , gulp.dest('./dst')
     ]);
 });
 
