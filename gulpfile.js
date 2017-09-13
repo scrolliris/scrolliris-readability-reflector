@@ -43,7 +43,7 @@ gulp.task('env', function(done) {
 gulp.task('clean', function() {
   return gulp.src([
       './dist/*'
-    , './test/build/*.js'
+    , './tmp/**/*'
     , './coverage/*'
     ], {read: false})
     .pipe(clean());
@@ -157,7 +157,7 @@ gulp.task('build', ['build:browser', 'build:index', 'build:canvas']);
 
 // unit tests
 gulp.task('test:unit:clean', function() {
-  return gulp.src(['./test/build/unit-*.js'], {read: false})
+  return gulp.src(['./tmp/build/test/unit-*.js'], {read: false})
     .pipe(clean());
 });
 
@@ -174,11 +174,11 @@ gulp.task('test:unit:build', function() {
     .pipe(source('unit-tests.js'))
     .pipe(buffer())
     .on('error', util.log)
-    .pipe(gulp.dest('./test/build/'));
+    .pipe(gulp.dest('./tmp/build/test/'));
 });
 
 gulp.task('test:unit:run', function() {
-  return gulp.src(['test/build/unit-tests.js'])
+  return gulp.src(['tmp/build/test/unit-tests.js'])
     .pipe(tape({
       reporter: tapColorize()
     }));
@@ -189,15 +189,15 @@ gulp.task('test:unit', function() {
 });
 
 // functional tests
-gulp.task('test:functional:clean', function() {
-  return gulp.src(['./test/build/functional-*.js'], {read: false})
+gulp.task('test:func:clean', function() {
+  return gulp.src(['./tmp/build/test/func-*.js'], {read: false})
     .pipe(clean());
 });
 
-// cat ./test/build/functional-tests.js | ./node_modules/.bin/tape-run
-gulp.task('test:functional:build', function() {
+// cat ./test/build/func-tests.js | ./node_modules/.bin/tape-run
+gulp.task('test:func:build', function() {
   return browserify({
-      entries: './test/functional/index.js'
+      entries: './test/func/index.js'
     , debug:   true
     })
     .transform('babelify', {
@@ -205,16 +205,16 @@ gulp.task('test:functional:build', function() {
     , sourceMapsAbsolute: true
     })
     .bundle()
-    .pipe(source('functional-tests.js'))
+    .pipe(source('func-tests.js'))
     .pipe(buffer())
     .on('error', util.log)
-    .pipe(gulp.dest('./test/build/'));
+    .pipe(gulp.dest('./tmp/build/test/'));
 });
 
 // run tests on electron
-gulp.task('test:functional:run', function() {
+gulp.task('test:func:run', function() {
   return browserify({
-      entries: './test/functional/index.js'
+      entries: './test/func/index.js'
     , debug:   true
     })
     .transform('babelify', {
@@ -227,12 +227,12 @@ gulp.task('test:functional:run', function() {
     .pipe(process.stdout);
 });
 
-gulp.task('test:functional', function() {
-  return sequence('test:functional:run');
+gulp.task('test:func', function() {
+  return sequence('test:func:clean', 'test:func:build', 'test:func:run');
 });
 
-gulp.task('test:clean', ['test:unit:clean', 'test:functional:clean']);
-gulp.task('test',  ['test:unit', 'test:functional']);
+gulp.task('test:clean', ['test:unit:clean', 'test:func:clean']);
+gulp.task('test',  ['test:unit', 'test:func']);
 
 
 // -- [main tasks]

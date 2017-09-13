@@ -3,7 +3,7 @@ node_modules
 .nyc_output
 coverage
 
-test/build/*.js
+tmp/build/**/*.js
 
 *.log
 venv
