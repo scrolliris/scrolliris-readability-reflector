@@ -1,11 +1,11 @@
 # https://docs.gitlab.com/ce/ci/yaml/
 stages:
-  - check
-  - test
-  - coverage
+  - check-style
+  - test-code
+  - test-coverage
 
-check-style:
-  stage: check
+check:
+  stage: check-style
   image: node:7.10.1
   variables:
     ENV: development
@@ -22,8 +22,8 @@ check-style:
   except:
     - tags
 
-run-test:
-  stage: test
+test:
+  stage: test-code
   image: node:7.10.1
   variables:
     NODE_ENV: test
@@ -40,8 +40,8 @@ run-test:
   except:
     - tags
 
-run-coverage:
-  stage: coverage
+coverage:
+  stage: test-coverage
   image: node:7.10.1
   variables:
     NODE_ENV: test
