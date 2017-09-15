@@ -28,7 +28,7 @@ https://about.scrolliris.com/).
 
 ## Requirements
 
-* Node.js `7.8.0` (build)
+* Node.js `7.10.1` (build)
 
 
 ## Install
@@ -75,7 +75,7 @@ settings takes...
 % gulp test:unit
 
 : run functional tests on Electron
-% gulp test:functional
+% gulp test:func
 ```
 
 
