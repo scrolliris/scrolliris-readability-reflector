@@ -1,13 +1,14 @@
 'use strict';
 
 var fs = require('fs')
-  , pkg = require('./package.json')
+  , glob = require('glob')
   ;
 
 var gulp = require('gulp')
   , babelify = require('babelify')
   , browserify = require('browserify')
   , buffer = require('vinyl-buffer')
+  , through = require('through2')
   , clean = require('gulp-clean')
   , minify = require('gulp-clean-css')
   , env = require('gulp-env')
@@ -87,13 +88,13 @@ var runUglify = function(filename) {
 
 var prefix = 'scrolliris-readability-'
 
-gulp.task('build:browserify:index', ['env'],
+gulp.task('build:browserify:index',
   runBrowserify('index.js', prefix + 'reflector.js'));
 
-gulp.task('build:browserify:browser', ['env'],
+gulp.task('build:browserify:browser',
   runBrowserify('browser.js', prefix + 'reflector-browser.js'));
 
-gulp.task('build:browserify:canvas', ['env'],
+gulp.task('build:browserify:canvas',
   runBrowserify('canvas.js', prefix + 'reflector-canvas.js'));
 
 gulp.task('build:compileCSS:canvas', function () {
@@ -105,16 +106,16 @@ gulp.task('build:compileCSS:canvas', function () {
     .pipe(gulp.dest('./dst/'));
 });
 
-gulp.task('build:uglify:index', ['env'],
+gulp.task('build:uglify:index',
   runUglify(prefix + 'reflector.js'));
 
-gulp.task('build:uglify:browser', ['env'],
+gulp.task('build:uglify:browser',
   runUglify(prefix + 'reflector-browser.js'));
 
-gulp.task('build:uglify:canvas', ['env'],
+gulp.task('build:uglify:canvas',
   runUglify(prefix + 'reflector-canvas.js'));
 
-gulp.task('build:minify:canvas', ['env'], function () {
+gulp.task('build:minify:canvas', function () {
   return pump([
       gulp.src(['./dst/' + prefix + 'reflector-canvas.css'])
     , sourcemaps.init({
@@ -127,21 +128,21 @@ gulp.task('build:minify:canvas', ['env'], function () {
     ]);
 });
 
-gulp.task('build:index', function() {
+gulp.task('build:index', ['env'], function() {
   return sequence(
     'build:browserify:index'
   , 'build:uglify:index'
   );
 });
 
-gulp.task('build:browser', function() {
+gulp.task('build:browser', ['env'], function() {
   return sequence(
     'build:browserify:browser'
   , 'build:uglify:browser'
   );
 });
 
-gulp.task('build:canvas', function() {
+gulp.task('build:canvas', ['env'], function() {
   return sequence(
     'build:browserify:canvas'
   , 'build:uglify:canvas'
@@ -155,7 +156,7 @@ gulp.task('build', ['build:browser', 'build:index', 'build:canvas']);
 
 // -- [test tasks]
 
-// unit tests
+// unit test
 gulp.task('test:unit:clean', function() {
   return gulp.src(['./tmp/build/test/unit-*.js'], {read: false})
     .pipe(clean());
@@ -167,18 +168,18 @@ gulp.task('test:unit:build', function() {
     , debug: true
     })
     .transform('babelify', {
-      presets:            ['es2015']
+      presets: ['es2015']
     , sourceMapsAbsolute: true
     })
     .bundle()
-    .pipe(source('unit-tests.js'))
+    .pipe(source('unit-test.js'))
     .pipe(buffer())
     .on('error', util.log)
     .pipe(gulp.dest('./tmp/build/test/'));
 });
 
 gulp.task('test:unit:run', function() {
-  return gulp.src(['tmp/build/test/unit-tests.js'])
+  return gulp.src(['tmp/build/test/unit-test.js'])
     .pipe(tape({
       reporter: tapColorize()
     }));
@@ -188,40 +189,42 @@ gulp.task('test:unit', function() {
   return sequence('test:unit:clean', 'test:unit:build', 'test:unit:run');
 });
 
-// functional tests
+// functional test
 gulp.task('test:func:clean', function() {
   return gulp.src(['./tmp/build/test/func-*.js'], {read: false})
     .pipe(clean());
 });
 
-// cat ./test/build/func-tests.js | ./node_modules/.bin/tape-run
 gulp.task('test:func:build', function() {
   return browserify({
-      entries: './test/func/index.js'
-    , debug:   true
+      entries: glob.sync('./test/func/**/*.js')
+    , debug: true
     })
     .transform('babelify', {
-      presets:            ['es2015']
+      presets: ['es2015']
     , sourceMapsAbsolute: true
     })
     .bundle()
-    .pipe(source('func-tests.js'))
+    .pipe(source('func-test.js'))
     .pipe(buffer())
     .on('error', util.log)
     .pipe(gulp.dest('./tmp/build/test/'));
 });
 
-// run tests on electron
+// run tests on electron (default)
 gulp.task('test:func:run', function() {
-  return browserify({
-      entries: './test/func/index.js'
-    , debug:   true
-    })
-    .transform('babelify', {
-      presets:            ['es2015']
-    , sourceMapsAbsolute: true
-    })
-    .bundle()
+  // same as:
+  //   `cat ./tmp/build/test/func-test.js | ./node_modules/.bin/tape-run`
+  var stream = function() {
+    return through.obj(function(file, encoding, callback) {
+      this.push(file.contents);
+      return callback();
+    });
+  };
+  return gulp.src([
+      './tmp/build/test/func-*.js'
+    ])
+    .pipe(stream())
     .pipe(tapeRun())
     .on('error', util.log)
     .pipe(process.stdout);
@@ -232,7 +235,7 @@ gulp.task('test:func', function() {
 });
 
 gulp.task('test:clean', ['test:unit:clean', 'test:func:clean']);
-gulp.task('test',  ['test:unit', 'test:func']);
+gulp.task('test', ['test:unit', 'test:func']);
 
 
 // -- [main tasks]
