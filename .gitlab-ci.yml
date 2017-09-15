@@ -1,34 +1,34 @@
 # https://docs.gitlab.com/ce/ci/yaml/
 stages:
-  #- check
+  - check
   - test
   - coverage
 
-#check-style:
-#  stage: check
-#  image: node:6.7.0
-#  services:
-#  variables:
-#    ENV: development
-#  before_script:
-#    - node --version
-#    - npm --version
-#    - npm install -g eslint
-#  script:
-#    - eslint lib
-#  cache:
-#    untracked: true
-#    paths:
-#      - node_modules
-#  except:
-#    - tags
+check-style:
+  stage: check
+  image: node:7.10.1
+  services:
+  variables:
+    ENV: development
+  before_script:
+    - node --version
+    - npm --version
+    - npm install -g eslint
+  script:
+    - eslint src/**/*.js
+  cache:
+    untracked: true
+    paths:
+      - node_modules
+  except:
+    - tags
 
 run-test:
   stage: test
-  image: node:7.8.0
+  image: node:7.10.1
   services:
   variables:
-    NODE_ENV: development
+    NODE_ENV: test
   before_script:
     - node --version
     - npm --version
@@ -44,10 +44,10 @@ run-test:
 
 run-coverage:
   stage: coverage
-  image: node:7.8.0
+  image: node:7.10.1
   services:
   variables:
-    NODE_ENV: development
+    NODE_ENV: test
   before_script:
     - node --version
     - npm --version
