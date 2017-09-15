@@ -6,7 +6,7 @@ module.exports = function(config) {
       'test/**/*.js'
     ]
   , exclude: [
-      'test/build/*.js'
+      'tmp/build/*.js'
     ]
   , preprocessors: {
       'test/**/*.js': ['browserify']
