@@ -17,7 +17,7 @@
   "maintainers": [
     "Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net> (https://grauwoelfchen.net)"
   ],
-  "main": "./src/browser.js",
+  "browser": "./src/browser.js",
   "keywords": [
     "dom",
     "html",
