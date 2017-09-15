@@ -1,6 +1,6 @@
 module.exports = function(config) {
   config.set({
-    basePath: '.'
+    basePath: ''
   , frameworks: ['browserify', 'tape']
   , files: [
       'test/**/*.js'
@@ -19,7 +19,7 @@ module.exports = function(config) {
       , plugins: ['istanbul']
       }]
     ]}
-  , reporters: ['coverage']
+  , reporters: ['progress', 'coverage']
   , coverageReporter: {
       dir: 'coverage'
     , reporters: [
