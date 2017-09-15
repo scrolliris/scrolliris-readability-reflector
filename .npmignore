@@ -1,3 +1,6 @@
+.env
+.env.ci
+.env.ci.sample
 .eslintrc
 .eslintignore
 .gitlab-ci.yml
@@ -5,6 +8,7 @@
 gulpfile.js
 test
 tmp
+bin
 example
 coverage
 node_modules

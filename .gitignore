@@ -3,7 +3,13 @@ node_modules
 .nyc_output
 coverage
 
+bin/gitlab-ci-multi-runner
+
+.env.ci
+.env
+
 tmp/build/**/*.js
+tmp/_cache
 
 *.log
 venv
