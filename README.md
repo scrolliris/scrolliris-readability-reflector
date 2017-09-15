@@ -2,11 +2,9 @@
 
 `/síl/`
 
-[![build status](
-https://gitlab.com/lupine-software/sihl/badges/master/build.svg)](
-https://gitlab.com/lupine-software/sihl/commits/master) [![coverage report](
-https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg)](
-https://gitlab.com/lupine-software/sihl/commits/master)
+[![build status][gitlab-ci-build]][gitlab-commits] [
+![coverage report][gitlab-ci-coverage]][gitlab-commits] [
+![npm version][npm-version]][npm-site]
 
 ![Sihl Widget](
 https://gitlab.com/lupine-software/sihl/raw/master/example/img/sihl-widget.png)
@@ -88,3 +86,10 @@ under the terms of the GNU General Public License as published by the
 Free Software Foundation.
 
 See [LICENSE](LICENSE).
+
+
+[gitlab-ci-build]: https://gitlab.com/lupine-software/sihl/badges/master/build.svg
+[gitlab-ci-coverage]:https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg
+[gitlab-commits]: https://gitlab.com/lupine-software/sihl/commits/master
+[npm-version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
+[npm-site]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector
