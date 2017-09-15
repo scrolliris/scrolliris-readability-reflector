@@ -1,6 +1,6 @@
 import test from 'tape';
 
-import '../../lib/index.js';
+import '../../src/index.js';
 
 // FIME
 test('', (t) => {

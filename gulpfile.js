@@ -55,7 +55,7 @@ gulp.task('clean', function() {
 var runBrowserify = function(inputFile, outputFile) {
   return function() {
     return browserify({
-        entries: './lib/' + inputFile
+        entries: './src/' + inputFile
       , debug: false
       })
       .transform('babelify', {
@@ -97,7 +97,7 @@ gulp.task('build:browserify:canvas', ['env'],
   runBrowserify('canvas.js', prefix + 'reflector-canvas.js'));
 
 gulp.task('build:compileCSS:canvas', function () {
-  return gulp.src('./lib/canvas.styl')
+  return gulp.src('./src/canvas.styl')
     .pipe(stylus())
     .pipe(rename(function(file) {
       file.basename = prefix + 'reflector-canvas';
