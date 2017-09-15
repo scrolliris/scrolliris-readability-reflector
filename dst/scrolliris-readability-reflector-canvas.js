@@ -1,236 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _rasterizehtml = require('rasterizehtml');
-
-var _rasterizehtml2 = _interopRequireDefault(_rasterizehtml);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function shadeColor(color, percent) {
-  var f = parseInt(color.slice(1), 16),
-      t = percent < 0 ? 0 : 255,
-      p = percent < 0 ? percent * -1 : percent;
-  var R = f >> 16,
-      G = f >> 8 & 0x00FF,
-      B = f & 0x0000FF;
-  return '#' + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
-}
-
-function collectElements(article, selectors) {
-  var q = '';
-  [// default
-  ['heading', 'h1,h2,h3,h4,h5,h6'], ['paragraph', 'p']
-  //, ['sentence', '']  FIXME: sentence must be nested in p
-  , ['material', 'ul,ol,pre,table,blockquote']].forEach(function (d) {
-    var key = d[0];
-    q += ',' + (selectors[key] || d[1]);
-  });
-  return article.querySelectorAll(q.slice(1));
-}
-
-function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback) {
-  var credentials = { csrfToken: csrfToken };
-  if (!credentials.csrfToken) {
-    credentials.csrfToken = '';
-  }
-  var getJSON = function getJSON(url) {
-    var emptyData = { 'p': [] };
-    return new Promise(function (resolve, reject) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      xhr.setRequestHeader('Accept', 'application/json');
-      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-      if (credentials.csrfToken !== '') {
-        xhr.setRequestHeader('X-CSRF-Token', credentials.csrfToken);
-      }
-      xhr.responseType = 'text';
-      xhr.onerror = function () {
-        var status = xhr.status;
-        reject(emptyData);
-      };
-      xhr.onload = function () {
-        var status = xhr.status,
-            response = xhr.response;
-        if (status === 200) {
-          response = response.replace(/^\]\)\}while\(1\);<\/x>/, '');
-          resolve(JSON.parse(response));
-        } else {
-          console.error('[ERROR] GET status: ', status);
-          reject(emptyData);
-        }
-      };
-      xhr.send();
-    });
-  };
-  return getJSON(endpointURL).then(function (data) {
-    return resolveCallback(data);
-  }, function (data) {
-    return rejectCallback(data);
-  });
-}
-
-function buildHTML(data, elements, styles) {
-  var html = '<html><head>';
-  html += Array.from(styles).map(function (s) {
-    // apply original style(s)
-    return s.outerHTML;
-  }).join('');
-  html += '</head><body>';
-
-  var colors0 = [// heatmap 11
-  '#2d96db', '#4aa8a6', '#64b977', '#99c95d', '#c5d062', '#f6d866', '#fab252', '#fd8e3e', '#fe6f43', '#fd515b', '#fb1b2a'];
-
-  var colors1 = [// pastel 12
-  '#9e0142', '#d0384d', '#ee6445', '#fa9c58', '#fdcd7b', '#fef0a7', '#f3faad', '#d0ec9c', '#98d5a4', '#5cb7a9', '#3582ba', '#5e4fa2'];
-
-  var colors = colors0 // heatmap (for now)
-  ,
-      pIndex = 0;
-  html += Array.from(elements).map(function (e) {
-    var n = document.importNode(e, true);
-    if (n.nodeName !== 'IMG') {
-      if (n.nodeName === 'P' && 'p' in data) {
-        // BETA only paragraph support
-        var v = data['p'][String(pIndex)];
-        if (v !== undefined) {
-          var color = '#ffffff';
-          try {
-            var i = Math.round(parseFloat(v) * 10);
-            color = shadeColor(colors[i], 0.55);
-          } catch (_e) {
-            console.error(e);
-          }
-          n.style.background = color;
-          n.style.backgroundColor = 'rgba(' + color + ', 0.9)';
-        }
-        pIndex += 1;
-      }
-    }
-    return n.outerHTML;
-  }).join('');
-  html += '</body></html>';
-  return html;
-}
-
-function makeCanvas(width, height) {
-  var container = document.getElementById('scrolliris_canvas_container'),
-      canvas = document.createElement('canvas');
-  canvas.setAttribute('id', 'scrolliris_canvas');
-  canvas.setAttribute('width', width * 0.5);
-  canvas.setAttribute('height', height * 0.5);
-  container.appendChild(canvas);
-  return canvas;
-}
-
-function drawCanvas(canvas, html, width, height, margin) {
-  _rasterizehtml2.default.drawHTML(html, canvas, {
-    zoom: 0.5,
-    width: width,
-    height: height
-  });
-
-  var dragging = false,
-      lastY = void 0,
-      marginTop = 0,
-      event = {};
-
-  canvas.addEventListener('mousedown', function (e) {
-    var evt = e || event;
-    canvas.style.cursor = 'grabbing';
-    dragging = true;
-    lastY = evt.clientY;
-    e.preventDefault();
-  }, false);
-
-  canvas.addEventListener('mouseup', function (e) {
-    canvas.style.cursor = 'grab';
-    dragging = false;
-  }, false);
-
-  window.addEventListener('mousemove', function (e) {
-    var evt = e || event;
-    if (dragging) {
-      var delta = evt.clientY - lastY;
-      lastY = evt.clientY;
-      marginTop += delta;
-      if (marginTop > 0) {
-        marginTop = 0;
-      } else if (marginTop < margin) {
-        marginTop = margin;
-      }
-      canvas.style.marginTop = marginTop + 'px';
-    }
-    e.preventDefault();
-  }, false);
-
-  window.addEventListener('mouseout', function (e) {
-    canvas.style.cursor = 'grab';
-    dragging = false;
-  }, false);
-}
-
-(function (doc, ctx) {
-  var config = {},
-      settings = {},
-      options = {};
-
-  if (ctx.hasOwnProperty('config') && _typeof(ctx.config) === 'object') {
-    config = ctx['config'];
-    // pass
-  }
-  if (ctx.hasOwnProperty('settings') && _typeof(ctx.options) === 'object') {
-    settings = ctx['settings'];
-    if (!settings.endpointURL) {
-      console.error('endpointURL is required');
-      return false;
-    }
-  }
-  if (ctx.hasOwnProperty('options') && _typeof(ctx.options) === 'object') {
-    options = ctx['options'];
-  }
-
-  var selectors = options.selectors || {};
-  var article = doc.querySelector(selectors.article || 'body article');
-
-  // collect elements and styles
-  var elements = collectElements(article, selectors),
-      styles = doc.querySelectorAll('style') || [];
-
-  // NOTE:
-  // Use <article>'s clientHeight?
-  var elm = doc.documentElement;
-  var docWidth = Math.max(doc.body.clientWidth, elm.clientWidth, elm.scrollWidth);
-  var docHeight = Math.max(doc.body.clientHeight, elm.clientHeight, elm.scrollHeight);
-
-  var draw = function draw(data) {
-    var html = buildHTML(data, elements, styles),
-        canvas = makeCanvas(docWidth, docHeight);
-    // draw minimap
-    var canvasHeight = 290 // container main area
-    ,
-        headerHeight = 22,
-        footerHeiht = 22,
-        frameMargin = 9 // {left|bottom} 9px
-    ,
-        scale = 0.5;
-    var margin = -1 * (docHeight * scale / canvasHeight * 100) + (headerHeight + footerHeiht + frameMargin);
-    drawCanvas(canvas, html, docWidth, docHeight, margin);
-  };
-
-  fetchResultData(settings.endpointURL, settings.csrfToken, function (data) {
-    // resolve
-    draw(data);
-  }, function (data) {
-    // reject
-    // FIXME
-    draw(data);
-  });
-})(window.parent.document, (window.ScrollirisReadabilityReflector || {}).Context);
-
-},{"rasterizehtml":39}],2:[function(require,module,exports){
 // UMD header
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -409,7 +177,7 @@ function drawCanvas(canvas, html, width, height, margin) {
     return ayepromise;
 }));
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1143,7 +911,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":4,"punycode":35,"querystring":38}],4:[function(require,module,exports){
+},{"./util":3,"punycode":34,"querystring":37}],3:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1161,7 +929,7 @@ module.exports = {
   }
 };
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = (function() {
   /*
    * Generated by PEG.js 0.8.0.
@@ -1723,7 +1491,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../util":7}],6:[function(require,module,exports){
+},{"../util":6}],5:[function(require,module,exports){
 var grammar = require('./grammar');
 
 
@@ -1756,7 +1524,7 @@ exports.serialize = function (parsedFontFaceSources) {
     }).join(', ');
 };
 
-},{"./grammar":5}],7:[function(require,module,exports){
+},{"./grammar":4}],6:[function(require,module,exports){
 var trimCSSWhitespace = function (value) {
     var whitespaceRegex = /^[\t\r\f\n ]*(.+?)[\t\r\f\n ]*$/;
 
@@ -1782,7 +1550,7 @@ exports.extractValue = function (value) {
     return unquoteString(trimCSSWhitespace(value));
 };
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*
 Copyright (c) 2014, Yahoo! Inc. All rights reserved.
 Copyrights licensed under the New BSD License.
@@ -1941,7 +1709,7 @@ function toPx(length) {
     }
 }
 
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
     CSSRule: require("./CSSRule").CSSRule,
@@ -1982,7 +1750,7 @@ Object.defineProperty(CSSOM.CSSDocumentRule.prototype, "cssText", {
 exports.CSSDocumentRule = CSSOM.CSSDocumentRule;
 ///CommonJS
 
-},{"./CSSRule":16,"./MatcherList":22}],10:[function(require,module,exports){
+},{"./CSSRule":15,"./MatcherList":21}],9:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSStyleDeclaration: require("./CSSStyleDeclaration").CSSStyleDeclaration,
@@ -2020,7 +1788,7 @@ Object.defineProperty(CSSOM.CSSFontFaceRule.prototype, "cssText", {
 exports.CSSFontFaceRule = CSSOM.CSSFontFaceRule;
 ///CommonJS
 
-},{"./CSSRule":16,"./CSSStyleDeclaration":17}],11:[function(require,module,exports){
+},{"./CSSRule":15,"./CSSStyleDeclaration":16}],10:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSRule: require("./CSSRule").CSSRule
@@ -2059,7 +1827,7 @@ Object.defineProperty(CSSOM.CSSHostRule.prototype, "cssText", {
 exports.CSSHostRule = CSSOM.CSSHostRule;
 ///CommonJS
 
-},{"./CSSRule":16}],12:[function(require,module,exports){
+},{"./CSSRule":15}],11:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSRule: require("./CSSRule").CSSRule,
@@ -2193,7 +1961,7 @@ Object.defineProperty(CSSOM.CSSImportRule.prototype, "cssText", {
 exports.CSSImportRule = CSSOM.CSSImportRule;
 ///CommonJS
 
-},{"./CSSRule":16,"./CSSStyleSheet":19,"./MediaList":23}],13:[function(require,module,exports){
+},{"./CSSRule":15,"./CSSStyleSheet":18,"./MediaList":22}],12:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSRule: require("./CSSRule").CSSRule,
@@ -2232,7 +2000,7 @@ Object.defineProperty(CSSOM.CSSKeyframeRule.prototype, "cssText", {
 exports.CSSKeyframeRule = CSSOM.CSSKeyframeRule;
 ///CommonJS
 
-},{"./CSSRule":16,"./CSSStyleDeclaration":17}],14:[function(require,module,exports){
+},{"./CSSRule":15,"./CSSStyleDeclaration":16}],13:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSRule: require("./CSSRule").CSSRule
@@ -2273,7 +2041,7 @@ Object.defineProperty(CSSOM.CSSKeyframesRule.prototype, "cssText", {
 exports.CSSKeyframesRule = CSSOM.CSSKeyframesRule;
 ///CommonJS
 
-},{"./CSSRule":16}],15:[function(require,module,exports){
+},{"./CSSRule":15}],14:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSRule: require("./CSSRule").CSSRule,
@@ -2316,7 +2084,7 @@ Object.defineProperty(CSSOM.CSSMediaRule.prototype, "cssText", {
 exports.CSSMediaRule = CSSOM.CSSMediaRule;
 ///CommonJS
 
-},{"./CSSRule":16,"./MediaList":23}],16:[function(require,module,exports){
+},{"./CSSRule":15,"./MediaList":22}],15:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {};
 ///CommonJS
@@ -2361,7 +2129,7 @@ CSSOM.CSSRule.prototype = {
 exports.CSSRule = CSSOM.CSSRule;
 ///CommonJS
 
-},{}],17:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {};
 ///CommonJS
@@ -2511,7 +2279,7 @@ exports.CSSStyleDeclaration = CSSOM.CSSStyleDeclaration;
 CSSOM.parse = require('./parse').parse; // Cannot be included sooner due to the mutual dependency between parse.js and CSSStyleDeclaration.js
 ///CommonJS
 
-},{"./parse":27}],18:[function(require,module,exports){
+},{"./parse":26}],17:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSStyleDeclaration: require("./CSSStyleDeclaration").CSSStyleDeclaration,
@@ -2703,7 +2471,7 @@ CSSOM.CSSStyleRule.parse = function(ruleText) {
 exports.CSSStyleRule = CSSOM.CSSStyleRule;
 ///CommonJS
 
-},{"./CSSRule":16,"./CSSStyleDeclaration":17}],19:[function(require,module,exports){
+},{"./CSSRule":15,"./CSSStyleDeclaration":16}],18:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	StyleSheet: require("./StyleSheet").StyleSheet,
@@ -2793,7 +2561,7 @@ exports.CSSStyleSheet = CSSOM.CSSStyleSheet;
 CSSOM.parse = require('./parse').parse; // Cannot be included sooner due to the mutual dependency between parse.js and CSSStyleSheet.js
 ///CommonJS
 
-},{"./CSSStyleRule":18,"./StyleSheet":24,"./parse":27}],20:[function(require,module,exports){
+},{"./CSSStyleRule":17,"./StyleSheet":23,"./parse":26}],19:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {};
 ///CommonJS
@@ -2838,7 +2606,7 @@ CSSOM.CSSValue.prototype = {
 exports.CSSValue = CSSOM.CSSValue;
 ///CommonJS
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSValue: require('./CSSValue').CSSValue
@@ -3184,7 +2952,7 @@ CSSOM.CSSValueExpression.prototype._findMatchedIdx = function(token, idx, sep) {
 exports.CSSValueExpression = CSSOM.CSSValueExpression;
 ///CommonJS
 
-},{"./CSSValue":20}],22:[function(require,module,exports){
+},{"./CSSValue":19}],21:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {};
 ///CommonJS
@@ -3248,7 +3016,7 @@ CSSOM.MatcherList.prototype = {
 exports.MatcherList = CSSOM.MatcherList;
 ///CommonJS
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {};
 ///CommonJS
@@ -3311,7 +3079,7 @@ CSSOM.MediaList.prototype = {
 exports.MediaList = CSSOM.MediaList;
 ///CommonJS
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {};
 ///CommonJS
@@ -3330,7 +3098,7 @@ CSSOM.StyleSheet = function StyleSheet() {
 exports.StyleSheet = CSSOM.StyleSheet;
 ///CommonJS
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {
 	CSSStyleSheet: require("./CSSStyleSheet").CSSStyleSheet,
@@ -3408,7 +3176,7 @@ CSSOM.clone = function clone(stylesheet) {
 exports.clone = CSSOM.clone;
 ///CommonJS
 
-},{"./CSSKeyframeRule":13,"./CSSKeyframesRule":14,"./CSSMediaRule":15,"./CSSStyleDeclaration":17,"./CSSStyleRule":18,"./CSSStyleSheet":19}],26:[function(require,module,exports){
+},{"./CSSKeyframeRule":12,"./CSSKeyframesRule":13,"./CSSMediaRule":14,"./CSSStyleDeclaration":16,"./CSSStyleRule":17,"./CSSStyleSheet":18}],25:[function(require,module,exports){
 exports.CSSStyleDeclaration = require("./CSSStyleDeclaration").CSSStyleDeclaration;
 exports.CSSRule = require("./CSSRule").CSSRule;
 exports.CSSStyleRule = require("./CSSStyleRule").CSSStyleRule;
@@ -3420,7 +3188,7 @@ exports.CSSStyleSheet = require("./CSSStyleSheet").CSSStyleSheet;
 exports.parse = require("./parse").parse;
 exports.clone = require("./clone").clone;
 
-},{"./CSSImportRule":12,"./CSSMediaRule":15,"./CSSRule":16,"./CSSStyleDeclaration":17,"./CSSStyleRule":18,"./CSSStyleSheet":19,"./MediaList":23,"./StyleSheet":24,"./clone":25,"./parse":27}],27:[function(require,module,exports){
+},{"./CSSImportRule":11,"./CSSMediaRule":14,"./CSSRule":15,"./CSSStyleDeclaration":16,"./CSSStyleRule":17,"./CSSStyleSheet":18,"./MediaList":22,"./StyleSheet":23,"./clone":24,"./parse":26}],26:[function(require,module,exports){
 //.CommonJS
 var CSSOM = {};
 ///CommonJS
@@ -3825,7 +3593,7 @@ CSSOM.CSSValueExpression = require('./CSSValueExpression').CSSValueExpression;
 CSSOM.CSSDocumentRule = require('./CSSDocumentRule').CSSDocumentRule;
 ///CommonJS
 
-},{"./CSSDocumentRule":9,"./CSSFontFaceRule":10,"./CSSHostRule":11,"./CSSImportRule":12,"./CSSKeyframeRule":13,"./CSSKeyframesRule":14,"./CSSMediaRule":15,"./CSSStyleDeclaration":17,"./CSSStyleRule":18,"./CSSStyleSheet":19,"./CSSValueExpression":21}],28:[function(require,module,exports){
+},{"./CSSDocumentRule":8,"./CSSFontFaceRule":9,"./CSSHostRule":10,"./CSSImportRule":11,"./CSSKeyframeRule":12,"./CSSKeyframesRule":13,"./CSSMediaRule":14,"./CSSStyleDeclaration":16,"./CSSStyleRule":17,"./CSSStyleSheet":18,"./CSSValueExpression":20}],27:[function(require,module,exports){
 // Simple, stupid "background"/"background-image" value parser that just aims at exposing the image URLs
 "use strict";
 
@@ -3937,7 +3705,7 @@ exports.serialize = function (parsedBackground) {
     return backgroundLayers.join(', ');
 };
 
-},{"./cssSupport":29}],29:[function(require,module,exports){
+},{"./cssSupport":28}],28:[function(require,module,exports){
 "use strict";
 
 var cssom;
@@ -4035,7 +3803,7 @@ exports.changeFontFaceRuleSrc = function (cssRules, rule, newSrc) {
     exports.exchangeRule(cssRules, rule, newRuleText);
 };
 
-},{"cssom":26}],30:[function(require,module,exports){
+},{"cssom":25}],29:[function(require,module,exports){
 "use strict";
 
 var util = require('./util'),
@@ -4281,7 +4049,7 @@ exports.inlineReferences = function (doc, options) {
     });
 };
 
-},{"./cssSupport":29,"./inlineCss":31,"./inlineImage":32,"./inlineScript":33,"./util":34}],31:[function(require,module,exports){
+},{"./cssSupport":28,"./inlineCss":30,"./inlineImage":31,"./inlineScript":32,"./util":33}],30:[function(require,module,exports){
 "use strict";
 
 var ayepromise = require('ayepromise'),
@@ -4630,7 +4398,7 @@ exports.loadAndInlineCSSResourcesForRules = function (cssRules, options) {
     });
 };
 
-},{"./backgroundValueParser":28,"./cssSupport":29,"./util":34,"ayepromise":2,"css-font-face-src":6}],32:[function(require,module,exports){
+},{"./backgroundValueParser":27,"./cssSupport":28,"./util":33,"ayepromise":1,"css-font-face-src":5}],31:[function(require,module,exports){
 "use strict";
 
 var util = require('./util');
@@ -4717,7 +4485,7 @@ exports.inline = function (doc, options) {
     }));
 };
 
-},{"./util":34}],33:[function(require,module,exports){
+},{"./util":33}],32:[function(require,module,exports){
 "use strict";
 
 var util = require('./util');
@@ -4770,7 +4538,7 @@ exports.inline = function (doc, options) {
     }));
 };
 
-},{"./util":34}],34:[function(require,module,exports){
+},{"./util":33}],33:[function(require,module,exports){
 "use strict";
 
 var url = require('url'),
@@ -4970,7 +4738,7 @@ exports.memoize = function (func, hasher, memo) {
     };
 };
 
-},{"ayepromise":2,"url":3}],35:[function(require,module,exports){
+},{"ayepromise":1,"url":2}],34:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.3.2 by @mathias */
 ;(function(root) {
@@ -5504,7 +5272,7 @@ exports.memoize = function (func, hasher, memo) {
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],36:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5590,7 +5358,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5677,13 +5445,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":36,"./encode":37}],39:[function(require,module,exports){
+},{"./decode":35,"./encode":36}],38:[function(require,module,exports){
 /*! rasterizeHTML.js - v1.2.4 - 2016-10-30
 * http://www.github.com/cburgmer/rasterizeHTML.js
 * Copyright (c) 2016 Christoph Burgmer; Licensed MIT */
@@ -7032,7 +6800,7 @@ return rasterizeHTML;
 
 }));
 
-},{"ayepromise":2,"css-mediaquery":8,"inlineresources":30,"sane-domparser-error":40,"url":3,"xmlserializer":41}],40:[function(require,module,exports){
+},{"ayepromise":1,"css-mediaquery":7,"inlineresources":29,"sane-domparser-error":39,"url":2,"xmlserializer":40}],39:[function(require,module,exports){
 'use strict';
 
 var innerXML = function (node) {
@@ -7112,7 +6880,7 @@ exports.failOnParseError = function (doc) {
     return doc;
 };
 
-},{}],41:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var removeInvalidCharacters = function (content) {
     // See http://www.w3.org/TR/xml/#NT-Char for valid XML 1.0 characters
     return content.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
@@ -7230,4 +6998,236 @@ exports.serializeToString = function (node) {
     return removeInvalidCharacters(nodeTreeToXHTML(node, {rootNode: true}));
 };
 
-},{}]},{},[1]);
+},{}],41:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _rasterizehtml = require('rasterizehtml');
+
+var _rasterizehtml2 = _interopRequireDefault(_rasterizehtml);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function shadeColor(color, percent) {
+  var f = parseInt(color.slice(1), 16),
+      t = percent < 0 ? 0 : 255,
+      p = percent < 0 ? percent * -1 : percent;
+  var R = f >> 16,
+      G = f >> 8 & 0x00FF,
+      B = f & 0x0000FF;
+  return '#' + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+}
+
+function collectElements(article, selectors) {
+  var q = '';
+  [// default
+  ['heading', 'h1,h2,h3,h4,h5,h6'], ['paragraph', 'p']
+  //, ['sentence', '']  FIXME: sentence must be nested in p
+  , ['material', 'ul,ol,pre,table,blockquote']].forEach(function (d) {
+    var key = d[0];
+    q += ',' + (selectors[key] || d[1]);
+  });
+  return article.querySelectorAll(q.slice(1));
+}
+
+function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback) {
+  var credentials = { csrfToken: csrfToken };
+  if (!credentials.csrfToken) {
+    credentials.csrfToken = '';
+  }
+  var getJSON = function getJSON(url) {
+    var emptyData = { 'p': [] };
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.setRequestHeader('Accept', 'application/json');
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      if (credentials.csrfToken !== '') {
+        xhr.setRequestHeader('X-CSRF-Token', credentials.csrfToken);
+      }
+      xhr.responseType = 'text';
+      xhr.onerror = function () {
+        var status = xhr.status;
+        reject(emptyData);
+      };
+      xhr.onload = function () {
+        var status = xhr.status,
+            response = xhr.response;
+        if (status === 200) {
+          response = response.replace(/^\]\)\}while\(1\);<\/x>/, '');
+          resolve(JSON.parse(response));
+        } else {
+          console.error('[ERROR] GET status: ', status);
+          reject(emptyData);
+        }
+      };
+      xhr.send();
+    });
+  };
+  return getJSON(endpointURL).then(function (data) {
+    return resolveCallback(data);
+  }, function (data) {
+    return rejectCallback(data);
+  });
+}
+
+function buildHTML(data, elements, styles) {
+  var html = '<html><head>';
+  html += Array.from(styles).map(function (s) {
+    // apply original style(s)
+    return s.outerHTML;
+  }).join('');
+  html += '</head><body>';
+
+  var colors0 = [// heatmap 11
+  '#2d96db', '#4aa8a6', '#64b977', '#99c95d', '#c5d062', '#f6d866', '#fab252', '#fd8e3e', '#fe6f43', '#fd515b', '#fb1b2a'];
+
+  var colors1 = [// pastel 12
+  '#9e0142', '#d0384d', '#ee6445', '#fa9c58', '#fdcd7b', '#fef0a7', '#f3faad', '#d0ec9c', '#98d5a4', '#5cb7a9', '#3582ba', '#5e4fa2'];
+
+  var colors = colors0 // heatmap (for now)
+  ,
+      pIndex = 0;
+  html += Array.from(elements).map(function (e) {
+    var n = document.importNode(e, true);
+    if (n.nodeName !== 'IMG') {
+      if (n.nodeName === 'P' && 'p' in data) {
+        // BETA only paragraph support
+        var v = data['p'][String(pIndex)];
+        if (v !== undefined) {
+          var color = '#ffffff';
+          try {
+            var i = Math.round(parseFloat(v) * 10);
+            color = shadeColor(colors[i], 0.55);
+          } catch (_e) {
+            console.error(e);
+          }
+          n.style.background = color;
+          n.style.backgroundColor = 'rgba(' + color + ', 0.9)';
+        }
+        pIndex += 1;
+      }
+    }
+    return n.outerHTML;
+  }).join('');
+  html += '</body></html>';
+  return html;
+}
+
+function makeCanvas(width, height) {
+  var container = document.getElementById('scrolliris_canvas_container'),
+      canvas = document.createElement('canvas');
+  canvas.setAttribute('id', 'scrolliris_canvas');
+  canvas.setAttribute('width', width * 0.5);
+  canvas.setAttribute('height', height * 0.5);
+  container.appendChild(canvas);
+  return canvas;
+}
+
+function drawCanvas(canvas, html, width, height, margin) {
+  _rasterizehtml2.default.drawHTML(html, canvas, {
+    zoom: 0.5,
+    width: width,
+    height: height
+  });
+
+  var dragging = false,
+      lastY = void 0,
+      marginTop = 0,
+      event = {};
+
+  canvas.addEventListener('mousedown', function (e) {
+    var evt = e || event;
+    canvas.style.cursor = 'grabbing';
+    dragging = true;
+    lastY = evt.clientY;
+    e.preventDefault();
+  }, false);
+
+  canvas.addEventListener('mouseup', function (e) {
+    canvas.style.cursor = 'grab';
+    dragging = false;
+  }, false);
+
+  window.addEventListener('mousemove', function (e) {
+    var evt = e || event;
+    if (dragging) {
+      var delta = evt.clientY - lastY;
+      lastY = evt.clientY;
+      marginTop += delta;
+      if (marginTop > 0) {
+        marginTop = 0;
+      } else if (marginTop < margin) {
+        marginTop = margin;
+      }
+      canvas.style.marginTop = marginTop + 'px';
+    }
+    e.preventDefault();
+  }, false);
+
+  window.addEventListener('mouseout', function (e) {
+    canvas.style.cursor = 'grab';
+    dragging = false;
+  }, false);
+}
+
+(function (doc, ctx) {
+  var config = {},
+      settings = {},
+      options = {};
+
+  if (ctx.hasOwnProperty('config') && _typeof(ctx.config) === 'object') {
+    config = ctx['config'];
+    // pass
+  }
+  if (ctx.hasOwnProperty('settings') && _typeof(ctx.options) === 'object') {
+    settings = ctx['settings'];
+    if (!settings.endpointURL) {
+      console.error('endpointURL is required');
+      return false;
+    }
+  }
+  if (ctx.hasOwnProperty('options') && _typeof(ctx.options) === 'object') {
+    options = ctx['options'];
+  }
+
+  var selectors = options.selectors || {};
+  var article = doc.querySelector(selectors.article || 'body article');
+
+  // collect elements and styles
+  var elements = collectElements(article, selectors),
+      styles = doc.querySelectorAll('style') || [];
+
+  // NOTE:
+  // Use <article>'s clientHeight?
+  var elm = doc.documentElement;
+  var docWidth = Math.max(doc.body.clientWidth, elm.clientWidth, elm.scrollWidth);
+  var docHeight = Math.max(doc.body.clientHeight, elm.clientHeight, elm.scrollHeight);
+
+  var draw = function draw(data) {
+    var html = buildHTML(data, elements, styles),
+        canvas = makeCanvas(docWidth, docHeight);
+    // draw minimap
+    var canvasHeight = 290 // container main area
+    ,
+        headerHeight = 22,
+        footerHeiht = 22,
+        frameMargin = 9 // {left|bottom} 9px
+    ,
+        scale = 0.5;
+    var margin = -1 * (docHeight * scale / canvasHeight * 100) + (headerHeight + footerHeiht + frameMargin);
+    drawCanvas(canvas, html, docWidth, docHeight, margin);
+  };
+
+  fetchResultData(settings.endpointURL, settings.csrfToken, function (data) {
+    // resolve
+    draw(data);
+  }, function (data) {
+    // reject
+    // FIXME
+    draw(data);
+  });
+})(window.parent.document, (window.ScrollirisReadabilityReflector || {}).Context);
+
+},{"rasterizehtml":38}]},{},[41]);
