@@ -1,3 +1,6 @@
+15 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
+	* Make functional test to work (electron via tape-run, phantomjs via karma)
+
 13 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
 	* Rename dist as dst
 
