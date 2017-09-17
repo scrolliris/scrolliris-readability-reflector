@@ -11,6 +11,7 @@ check:
     ENV: development
   before_script:
     - node --version
+    - npm install -g npm@5.4.2
     - npm --version
     - npm install -g eslint
   script:
@@ -30,6 +31,7 @@ test:
     NODE_ENV: test
   before_script:
     - node --version
+    - npm install -g npm@5.4.2
     - npm --version
     - npm install
   script:
@@ -48,6 +50,7 @@ coverage:
     NODE_ENV: test
   before_script:
     - node --version
+    - npm install -g npm@5.4.2
     - npm --version
     - npm install
   script:
