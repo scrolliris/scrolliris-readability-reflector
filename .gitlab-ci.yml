@@ -1,30 +1,29 @@
 # https://docs.gitlab.com/ce/ci/yaml/
 stages:
-  - reset-cache
+  #- reset-cache
   - check-style
   - test-code
   - test-coverage
 
-reset:
-  stage: reset-cache
-  image: node:7.10.1
-  cache:
-    untracked: true
-    paths:
-      - node_modules
-  script:
-    - npm cache clean -f
-    - rm -fr node_modules
-    - mkdir node_modules
+# reset:
+#   stage: reset-cache
+#   image: node:7.10.1
+#   script:
+#     - npm cache clean -f
+#     - rm -fr node_modules
+#     - mkdir node_modules
+#   cache:
+#     untracked: true
+#     paths:
+#       - node_modules
 
 check:
   stage: check-style
   image: node:7.10.1
   variables:
-    ENV: development
+    NODE_ENV: development
   before_script:
     - node --version
-    - npm install -g npm@5.4.1
     - npm --version
     - npm install -g eslint
   script:
@@ -44,7 +43,6 @@ test:
     NODE_ENV: test
   before_script:
     - node --version
-    - npm install -g npm@5.4.1
     - npm --version
     - npm install
   script:
@@ -63,7 +61,6 @@ coverage:
     NODE_ENV: test
   before_script:
     - node --version
-    - npm install -g npm@5.4.1
     - npm --version
     - npm install
   script:
