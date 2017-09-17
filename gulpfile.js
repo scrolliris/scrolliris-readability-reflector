@@ -44,7 +44,7 @@ gulp.task('env', function(done) {
 gulp.task('clean', function() {
   return gulp.src([
       './dst/*'
-    , './tmp/**/*'
+    , './tmp/build/**/*'
     , './coverage/*'
     ], {read: false})
     .pipe(clean());
