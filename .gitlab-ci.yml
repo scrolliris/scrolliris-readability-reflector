@@ -23,13 +23,13 @@ check:
   variables:
     NODE_ENV: development
   before_script:
-    - npm install --global npm@5.2.0
-    - npm install --global eslint@4.6.1
+    - npm install npm@5.2.0
+    - node_modules/.bin/npm install eslint@4.7.0
     - node --version
-    - npm --version
+    - node_modules/.bin/npm --version
   script:
-    - eslint test/**/*.js
-    - eslint src/**/*.js
+    - node_modules/.bin/eslint test/**/*.js
+    - node_modules/.bin/eslint src/**/*.js
   cache:
     untracked: true
     paths:
@@ -43,10 +43,10 @@ test:
   variables:
     NODE_ENV: test
   before_script:
-    - npm install --global npm@5.2.0
-    - npm install
+    - npm install npm@5.2.0
+    - node_modules/.bin/npm install
     - node --version
-    - npm --version
+    - node_modules/.bin/npm --version
   script:
     - node_modules/.bin/gulp test
   cache:
@@ -62,12 +62,12 @@ coverage:
   variables:
     NODE_ENV: test
   before_script:
-    - npm install --global npm@5.2.0
-    - npm install
+    - npm install npm@5.2.0
+    - node_modules/.bin/npm install
     - node --version
-    - npm --version
+    - node_modules/.bin/npm --version
   script:
-    - npm test
+    - node_modules/.bin/npm test
   cache:
     untracked: true
     paths:
