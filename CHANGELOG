@@ -1,46 +1,46 @@
 18 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Fix example
+  * Fix example
 
 16 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Add npm version badge in README.md
+  * Add npm version badge in README.md
 
 15 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.16
-	* Make functional test to work (electron via tape-run, phantomjs via karma)
+  * Release 0.0.16
+  * Make functional test to work (electron via tape-run, phantomjs via karma)
 
 13 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Rename dist as dst
+  * Rename dist as dst
 
 11 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.15
-	* Revert change adding `Accept-Encoding` (it's forbidden header)
-	* Release 0.0.14
-	* Add Accept-Encoding header as deplate for xhr
+  * Release 0.0.15
+  * Revert change adding `Accept-Encoding` (it's forbidden header)
+  * Release 0.0.14
+  * Add Accept-Encoding header as deplate for xhr
 
 21 Aug 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.10, 0.0.11, 0.0.12 and 0.0.13
-	* Update color rendering (Math.round)
-	* Update api response format
+  * Release 0.0.10, 0.0.11, 0.0.12 and 0.0.13
+  * Update color rendering (Math.round)
+  * Update api response format
 
 17 Aug 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.8 and 0.0.9
-	* Add csrfToken as optional argument
+  * Release 0.0.8 and 0.0.9
+  * Add csrfToken as optional argument
 
 21 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.6 and 0.0.7
-	* Fix canvas asset url replacing
-	* Improve minimap height calculation
+  * Release 0.0.6 and 0.0.7
+  * Fix canvas asset url replacing
+  * Improve minimap height calculation
 
 17 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.5
-	* Make configuration simple
+  * Release 0.0.5
+  * Make configuration simple
 
 14 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.3 and 0.0.4
-	* Fix dependency <style> tag
-	* Update Request Headers
+  * Release 0.0.3 and 0.0.4
+  * Fix dependency <style> tag
+  * Update Request Headers
 
 12 Jul 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-	* Release 0.0.2 and 0.0.1
-	* Add empty response handling
-	* Initial commit
+  * Release 0.0.2 and 0.0.1
+  * Add empty response handling
+  * Initial commit
