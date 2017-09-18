@@ -71,7 +71,7 @@ body {
   </section>
   <script>
 // -- tracker client script
-// dist script (in siret)
+// dst script (in siret)
 (function(d, w) {
   var config = {
         projectId: 'PROJECT_ID'
@@ -87,7 +87,7 @@ body {
   // local server
   //var trackerURL = 'http://localhost:8080/projects/'+config.projectId+'/tracker.js?api_key='+config.apiKey;
   // script
-  var trackerURL = '../../siret/dist/scrolliris-readability-tracker-browser.js';
+  var trackerURL = '../../siret/dst/scrolliris-readability-tracker-browser.js';
   /* ----- */
   var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src=trackerURL;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(config,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
 })(document, window);
@@ -108,13 +108,13 @@ body {
   // local server
   //var reflectorURL = 'http://localhost:8080/projects/'+config.projectId+'/reflector.js?api_key='+config.apiKey;
   // script
-  var reflectorURL = '../dist/scrolliris-readability-reflector-browser.js';
+  var reflectorURL = '../dst/scrolliris-readability-reflector-browser.js';
   /* ----- */
   var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src=reflectorURL;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
 })(document, window);
   </script>
 
-  <!--<script src="../dist/scrolliris-readability-reflector-browser.js"></script>-->
+  <!--<script src="../dst/scrolliris-readability-reflector-browser.js"></script>-->
   <!--<script>
 // standard usage
 (function(reflector) {
