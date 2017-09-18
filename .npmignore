@@ -5,6 +5,7 @@
 .eslintignore
 .gitlab-ci.yml
 .karma.conf.js
+.*-version
 gulpfile.js
 test
 tmp
