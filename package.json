@@ -17,18 +17,19 @@
   "maintainers": [
     "Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net> (https://grauwoelfchen.net)"
   ],
-  "browser": "./src/browser.js",
   "keywords": [
     "dom",
     "html",
     "browser"
   ],
   "license": "GPL-3.0",
+  "browser": "./src/browser.js",
   "dependencies": {
     "rasterizehtml": "1.2.4"
   },
   "devDependencies": {
     "fs": "0.0.1-security",
+    "glob": "7.1.2",
     "npm": "5.4.1",
     "through2": "2.0.3",
     "babel-plugin-istanbul": "4.1.4",
