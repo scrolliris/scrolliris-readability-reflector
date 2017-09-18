@@ -1,10 +1,10 @@
 'use strict';
 
 var fs = require('fs')
-  , glob = require('glob')
   ;
 
 var gulp = require('gulp')
+  , glob = require('glob')
   , babelify = require('babelify')
   , browserify = require('browserify')
   , buffer = require('vinyl-buffer')
