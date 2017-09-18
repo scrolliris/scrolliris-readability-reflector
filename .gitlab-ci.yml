@@ -23,9 +23,10 @@ check:
   variables:
     NODE_ENV: development
   before_script:
+    - npm install --global npm@5.2.0
+    - npm install --global eslint@4.6.1
     - node --version
     - npm --version
-    - npm install -g eslint
   script:
     - eslint test/**/*.js
     - eslint src/**/*.js
@@ -42,9 +43,10 @@ test:
   variables:
     NODE_ENV: test
   before_script:
+    - npm install --global npm@5.2.0
+    - npm install
     - node --version
     - npm --version
-    - npm install
   script:
     - node_modules/.bin/gulp test
   cache:
@@ -60,9 +62,10 @@ coverage:
   variables:
     NODE_ENV: test
   before_script:
+    - npm install --global npm@5.2.0
+    - npm install
     - node --version
     - npm --version
-    - npm install
   script:
     - npm test
   cache:
