@@ -7072,12 +7072,13 @@ function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback
   });
 }
 
-function buildHTML(data, elements, styles) {
+function buildHTML(data, elements) {
   var html = '<html><head>';
-  html += Array.from(styles).map(function (s) {
-    // apply original style(s)
-    return s.outerHTML;
-  }).join('');
+  html += '\n<style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;\n    font-size: 1.66em;\n  }\n</style>\n';
+  // additional styles
+  // html += Array.from([]).map((s) => {
+  //   return s.outerHTML;
+  // }).join('');
   html += '</head><body>';
 
   var colors0 = [// heatmap 11
@@ -7195,21 +7196,20 @@ function drawCanvas(canvas, html, width, height, margin) {
   var selectors = options.selectors || {};
   var article = doc.querySelector(selectors.article || 'body article');
 
-  // collect elements and styles
-  var elements = collectElements(article, selectors),
-      styles = doc.querySelectorAll('style') || [];
+  // collect elements
+  var elements = collectElements(article, selectors);
 
   // NOTE:
   // Use <article>'s clientHeight?
   var elm = doc.documentElement;
   var docWidth = Math.max(doc.body.clientWidth, elm.clientWidth, elm.scrollWidth);
-  var docHeight = Math.max(doc.body.clientHeight, elm.clientHeight, elm.scrollHeight);
+  var docHeight = Math.max(doc.body.clientHeight, elm.clientHeight, elm.scrollHeight) * 1.7;
 
   var draw = function draw(data) {
-    var html = buildHTML(data, elements, styles),
+    var html = buildHTML(data, elements),
         canvas = makeCanvas(docWidth, docHeight);
     // draw minimap
-    var canvasHeight = 290 // container main area
+    var canvasHeight = 325 // container main area
     ,
         headerHeight = 22,
         footerHeiht = 22,

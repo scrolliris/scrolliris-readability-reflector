@@ -54,7 +54,7 @@ var Widget = function () {
         console.error('canvasCSS is missing');
       }
 
-      var content = '\n<head>\n  <meta charset="utf-8">\n  <link rel="stylesheet" href="' + canvasCSS + '">\n</head>\n<body>\n  <div id="scrolliris_header">\n    <h1>Text Readability Heatmap<span class="label">BETA</span></h1>\n    <!-- <button class="btn close">close</button> -->\n  </div>\n  <div id="scrolliris_canvas_container"></div>\n  <div id="scrolliris_footer">\n    <p class="txt">Powered by\n      <a href="https://scrolliris.com/" target="_blank">Scrolliris</a></p>\n  </div>\n  <script src="' + canvasJS + '"></script>\n</body>\n';
+      var content = '\n<head>\n  <meta charset="utf-8">\n  <link rel="stylesheet" href="' + canvasCSS + '">\n</head>\n<body>\n  <div id="scrolliris_header">\n    <h1>Text Readability Heatmap<span class="label">BETA</span></h1>\n    <!-- <button class="btn close">close</button> -->\n  </div>\n  <div id="scrolliris_canvas_container"></div>\n  <div id="scrolliris_footer">\n    <p class="txt">Powered by\n      <a href="https://scrolliris.com/" target="_blank">Scrolliris</a></p>\n  </div>\n  <script async src="' + canvasJS + '"></script>\n</body>\n';
       content = content.replace(/\n/g, '');
       iframe.contentWindow.ScrollirisReadabilityReflector = {
         Context: ctx
@@ -66,7 +66,7 @@ var Widget = function () {
   }, {
     key: '_insertStyle',
     value: function _insertStyle() {
-      var cssContent = '\n#scrolliris_container {\n  position: fixed;\n  width: 0px;\n  height: 0px;\n  bottom: 0px;\n  left: 0px;\n  z-index: 9999999 !important;\n}\n\n#scrolliris_container .scrolliris-frame {\n  z-index: 9999999 !important;\n  position: fixed !important;\n  bottom: 9px;\n  left: 9px;\n  width: 260px;\n  height: 360px;\n  border: 1px solid rgba(51, 51, 51, 0.18);\n  border-radius: 1px;\n}\n';
+      var cssContent = '\n#scrolliris_container {\n  position: fixed;\n  width: 0px;\n  height: 0px;\n  bottom: 0px;\n  left: 0px;\n  z-index: 9999999 !important;\n}\n\n#scrolliris_container .scrolliris-frame {\n  z-index: 9999999 !important;\n  position: fixed !important;\n  bottom: 9px;\n  left: 9px;\n  width: 260px;\n  height: 400px;\n  border: 1px solid rgba(51, 51, 51, 0.18);\n  border-radius: 1px;\n}\n';
 
       var style = document.createElement('style');
       style.type = 'text/css';
