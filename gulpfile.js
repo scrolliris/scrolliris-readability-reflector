@@ -1,9 +1,10 @@
 'use strict';
 
-var fs = require('fs')
+var path = require('path')
   ;
 
-var gulp = require('gulp')
+var fs = require('fs')
+  , gulp = require('gulp')
   , glob = require('glob')
   , babelify = require('babelify')
   , browserify = require('browserify')
@@ -26,7 +27,7 @@ var gulp = require('gulp')
   ;
 
 
-// -- [shared tasks]
+// -- utility tasks
 
 gulp.task('env', function(done) {
   var dotenv_file = '.env';
@@ -51,7 +52,7 @@ gulp.task('clean', function() {
 });
 
 
-// -- [build tasks]
+// -- build tasks
 
 var runBrowserify = function(inputFile, outputFile) {
   return function() {
@@ -154,7 +155,7 @@ gulp.task('build:canvas', ['env'], function() {
 gulp.task('build', ['build:browser', 'build:index', 'build:canvas']);
 
 
-// -- [test tasks]
+// -- testing tasks
 
 // unit test
 gulp.task('test:unit:clean', function() {
@@ -238,7 +239,31 @@ gulp.task('test:clean', ['test:unit:clean', 'test:func:clean']);
 gulp.task('test', ['test:unit', 'test:func']);
 
 
-// -- [main tasks]
+// -- development tasks
+
+// watch targets
+var paths = {
+  browser: [
+    path.join('src', 'bworser.js')
+  ]
+, canvas: [
+    path.join('src', 'canvas.*')
+  ]
+, index: [
+    path.join('src', 'index.js')
+  ]
+};
+
+// watch tasks
+gulp.task('watch', ['env'], function() {
+  gulp.watch('gulpfile.js', ['build']);
+  gulp.watch(paths.browser, ['build:browser', 'build:index']);
+  gulp.watch(paths.canvas, ['build:canvas']);
+  gulp.watch(paths.index, ['build:index']);
+});
+
+
+// -- default tasks
 
 gulp.task('default', function() {
   var nodeEnv = process.env.NODE_ENV || 'production';
