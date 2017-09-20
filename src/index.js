@@ -85,7 +85,7 @@ class Widget {
   bottom: 9px;
   left: 9px;
   width: 260px;
-  height: 360px;
+  height: 400px;
   border: 1px solid rgba(51, 51, 51, 0.18);
   border-radius: 1px;
 }

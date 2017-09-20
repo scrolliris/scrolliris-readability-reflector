@@ -233,14 +233,14 @@ function drawCanvas(canvas, html, width, height, margin) {
   let docWidth = Math.max(
     doc.body.clientWidth, elm.clientWidth, elm.scrollWidth);
   let docHeight = Math.max(
-    doc.body.clientHeight, elm.clientHeight, elm.scrollHeight);
+    doc.body.clientHeight, elm.clientHeight, elm.scrollHeight) * 1.7;
 
   let draw = (data) => {
     let html = buildHTML(data, elements, styles)
       , canvas = makeCanvas(docWidth, docHeight)
       ;
     // draw minimap
-    let canvasHeight = 290 // container main area
+    let canvasHeight = 325 // container main area
       , headerHeight = 22
       , footerHeiht = 22
       , frameMargin = 9 // {left|bottom} 9px
