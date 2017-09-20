@@ -259,7 +259,7 @@ gulp.task('watch', ['env'], function() {
   gulp.watch('gulpfile.js', ['build']);
   gulp.watch(paths.browser, ['build:browser', 'build:index']);
   gulp.watch(paths.canvas, ['build:canvas']);
-  gulp.watch(paths.index, ['build:index']);
+  gulp.watch(paths.index, ['build:index', 'build:browser']);
 });
 
 
