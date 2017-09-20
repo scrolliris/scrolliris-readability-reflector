@@ -1,3 +1,8 @@
+20 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
+  * Remove original css application from canvas
+  * Update widget style
+  * Update iframe height (a little bit longer)
+
 18 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
   * Fix example
 
