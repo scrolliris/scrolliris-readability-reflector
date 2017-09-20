@@ -73,11 +73,20 @@ function fetchResultData(
   });
 }
 
-function buildHTML(data, elements, styles) {
+function buildHTML(data, elements) {
   let html = '<html><head>';
-  html += Array.from(styles).map((s) => { // apply original style(s)
-    return s.outerHTML;
-  }).join('');
+  html += `
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 1.66em;
+  }
+</style>
+`;
+  // additional styles
+  // html += Array.from([]).map((s) => {
+  //   return s.outerHTML;
+  // }).join('');
   html += '</head><body>';
 
   let colors0 = [ // heatmap 11
@@ -222,9 +231,8 @@ function drawCanvas(canvas, html, width, height, margin) {
   let selectors = (options.selectors || {});
   let article = doc.querySelector(selectors.article || 'body article');
 
-  // collect elements and styles
+  // collect elements
   let elements = collectElements(article, selectors)
-    , styles = (doc.querySelectorAll('style') || [])
     ;
 
   // NOTE:
@@ -236,7 +244,7 @@ function drawCanvas(canvas, html, width, height, margin) {
     doc.body.clientHeight, elm.clientHeight, elm.scrollHeight) * 1.7;
 
   let draw = (data) => {
-    let html = buildHTML(data, elements, styles)
+    let html = buildHTML(data, elements)
       , canvas = makeCanvas(docWidth, docHeight)
       ;
     // draw minimap

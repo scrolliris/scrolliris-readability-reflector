@@ -56,7 +56,7 @@ class Widget {
     <p class="txt">Powered by
       <a href="https://scrolliris.com/" target="_blank">Scrolliris</a></p>
   </div>
-  <script src="${canvasJS}"></script>
+  <script async src="${canvasJS}"></script>
 </body>
 `;
     content = content.replace(/\n/g, '');
