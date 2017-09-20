@@ -1,5 +1,5 @@
 20 Sep 2017 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
-  * Release 0.0.17
+  * Release 0.0.17 and 0.0.18
   * Remove original css application from canvas
   * Update widget style
   * Update iframe height (a little bit longer)
