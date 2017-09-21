@@ -1,21 +1,21 @@
 # https://docs.gitlab.com/ce/ci/yaml/
 stages:
-  #- reset-cache
+  - reset-cache
   - check-style
   - test-code
   - test-coverage
 
-# reset:
-#   stage: reset-cache
-#   image: node:7.10.1
-#   script:
-#     - npm cache clean -f
-#     - rm -fr node_modules
-#     - mkdir node_modules
-#   cache:
-#     untracked: true
-#     paths:
-#       - node_modules
+reset:
+  stage: reset-cache
+  image: node:7.10.1
+  script:
+    - npm cache clean -f
+    - rm -fr node_modules
+    - mkdir node_modules
+  cache:
+    untracked: true
+    paths:
+      - node_modules
 
 check:
   stage: check-style
