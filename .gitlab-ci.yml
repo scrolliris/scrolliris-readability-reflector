@@ -24,6 +24,7 @@ check:
     NODE_ENV: development
   before_script:
     - npm install npm@5.2.0
+    - npm install readable-stream acorn # fix npm issue
     - node_modules/.bin/npm install eslint@4.7.1
     - node --version
     - node_modules/.bin/npm --version
@@ -44,6 +45,8 @@ test:
     NODE_ENV: test
   before_script:
     - npm install npm@5.2.0
+    - npm install readable-stream acorn # fix npm issue
+    - node_modules/.bin/npm install eslint@4.7.1
     - node_modules/.bin/npm install
     - node --version
     - node_modules/.bin/npm --version
@@ -63,6 +66,7 @@ coverage:
     NODE_ENV: test
   before_script:
     - npm install npm@5.2.0
+    - npm install readable-stream acorn # fix
     - node_modules/.bin/npm install
     - node --version
     - node_modules/.bin/npm --version
