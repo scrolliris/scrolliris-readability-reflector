@@ -6,8 +6,7 @@
 ![coverage report][gitlab-ci-coverage]][gitlab-commits] [
 ![npm version][npm-version]][npm-site]
 
-![Sihl Widget](
-https://gitlab.com/lupine-software/sihl/raw/master/example/img/sihl-widget.png)
+![Sihl Widget](example/img/sihl-widget.png)
 
 
 ```txt
@@ -20,8 +19,7 @@ https://gitlab.com/lupine-software/sihl/raw/master/example/img/sihl-widget.png)
 Sihl; ScrollirIs Honest readability refLector
 ```
 
-The browser widget of [https://about.scrolliris.com/](
-https://about.scrolliris.com/).
+The browser widget of [Scrolliris](https://about.scrolliris.com/).
 
 
 ## Requirements
