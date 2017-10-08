@@ -2,12 +2,10 @@
 
 `/síl/`
 
-[![build status][gitlab-ci-build]][gitlab-commits] [
-![coverage report][gitlab-ci-coverage]][gitlab-commits] [
-![npm version][npm-version]][npm-site]
+[![pipeline status][ci-build]][commit] [![coverage report][ci-cov]][commit] [
+![npm version][version]][npm]
 
 ![Sihl Widget](example/img/sihl-widget.png)
-
 
 ```txt
          _      _
@@ -20,6 +18,12 @@ Sihl; ScrollirIs Honest readability refLector
 ```
 
 The browser widget of [Scrolliris](https://about.scrolliris.com/).
+
+
+## Repository
+
+[https://gitlab.com/lupine-software/sihl](
+https://gitlab.com/lupine-software/sihl)
 
 
 ## Requirements
@@ -77,17 +81,36 @@ settings takes...
 
 ## License
 
-Sihl; Copyright (c) 2017 Lupine Software LLC
+```txt
+Sihl
+Copyright (c) 2017 Lupine Software LLC
+```
 
-This program is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation.
+`GPL-3.0`
+
+The programs in this project are distributed as
+GNU General Public License. (version 3)
+
+```txt
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+```
 
 See [LICENSE](LICENSE).
 
 
-[gitlab-ci-build]: https://gitlab.com/lupine-software/sihl/badges/master/build.svg
-[gitlab-ci-coverage]:https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg
-[gitlab-commits]: https://gitlab.com/lupine-software/sihl/commits/master
-[npm-version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
-[npm-site]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector
+[ci-build]: https://gitlab.com/lupine-software/sihl/badges/master/build.svg
+[ci-cov]: https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg
+[commit]: https://gitlab.com/lupine-software/sihl/commits/master
+[version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
+[npm]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector
