@@ -17,7 +17,13 @@
 Sihl; ScrollirIs Honest readability refLector
 ```
 
-The browser widget of [Scrolliris](https://about.scrolliris.com/).
+**Sihl** idnicates text readability heatmap data which is tracked based on the
+scroll event in a gentlemanly manner by [Siret](
+https://gitlab.com/lupine-software/siret).
+
+This project is text readibility indicator by [Scrolliris](
+https://about.scrolliris.com).  
+It's called *Scrolliris Readability Reflector* as formal.
 
 
 ## Repository
