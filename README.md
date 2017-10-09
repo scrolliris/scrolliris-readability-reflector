@@ -2,7 +2,7 @@
 
 `/síl/`
 
-[![pipeline status][ci-build]][commit] [![coverage report][ci-cov]][commit] [
+[![pipeline status][pipeline]][commit] [![coverage report][coverage]][commit] [
 ![npm version][version]][npm]
 
 ![Sihl Widget](example/img/sihl-widget.png)
@@ -28,8 +28,7 @@ It's called *Scrolliris Readability Reflector* as formal.
 
 ## Repository
 
-[https://gitlab.com/lupine-software/sihl](
-https://gitlab.com/lupine-software/sihl)
+https://gitlab.com/lupine-software/sihl
 
 
 ## Requirements
@@ -115,8 +114,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 See [LICENSE](LICENSE).
 
 
-[ci-build]: https://gitlab.com/lupine-software/sihl/badges/master/build.svg
-[ci-cov]: https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg
+[pipeline]: https://gitlab.com/lupine-software/sihl/badges/master/pipeline.svg
+[coverage]: https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg
 [commit]: https://gitlab.com/lupine-software/sihl/commits/master
 [version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
 [npm]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector
