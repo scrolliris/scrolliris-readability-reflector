@@ -1,8 +1,3 @@
-body
-  margin 0
-  padding 0
-  background white
-
 // container
 #scrolliris_canvas_container
   width 242px !important
@@ -28,10 +23,12 @@ body
 
 #scrolliris_header
   h1
+    display inline-block
     margin 0
-    padding 8px 0 6px 6px
-    font-size 0.81em
-    text-align center
+    padding 8px 0 0 5px
+    font-family monospace
+    font-size 1.12em
+    text-align left
   h1 > span.label
     font-family monospace
     margin 0
@@ -46,11 +43,17 @@ body
     border none
     background none
     float right
+    &.close
+      font-family monospace
+      font-size 1.88em
+      color #888888
+      margin 0 7px 0 0
+      padding 2px
 
 // footer
 #scrolliris_footer
   text-align center
-  height 22px
+  height 23px
   border-top 1px solid #d3d3d3
   background-color #ffffff
 

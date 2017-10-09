@@ -6,12 +6,32 @@ class Widget {
 
   render() {
     let ctx = this.context;
+    let settings = (ctx.settings || {})
+      , options = (ctx.options || {'widget': 'active'})
+      ;
 
-    this._insertStyle();
+    var [frm, map, btn] = this._buildComponents(options.widget);
+
+    this._insertStyle(frm);
+
+    /**
+     * Note:
+     *
+     * ```
+     * div#scrolliris_container
+     *   iframe#scrolliris_frame
+     *     html
+     *       body
+     *         div#scrolliris_widget
+     *           div#scrolliris_icon_container
+     *           div#scrolliris_minimap_container
+     *             div#scrolliris_canvas_container
+     * ```
+    */
 
     // iframe
     let iframe = document.createElement('iframe');
-    iframe.setAttribute('class', 'scrolliris-frame');
+    iframe.setAttribute('id', 'scrolliris_frame');
 
     // iframe container
     let container = document.createElement('div');
@@ -28,9 +48,9 @@ class Widget {
     // reflector.js         --> reflector-canvas.js,.css
     // reflector-browser.js --> reflector-canvas.js,.css
     let reflectorJSRegex = /(-browser)?(\.min)?\.js(\?)?/;
-    let canvasJS = (ctx.settings || {}).canvasJS || scriptSrc.replace(
+    let canvasJS = settings.canvasJS || scriptSrc.replace(
           reflectorJSRegex, '-canvas$2.js$3').toString()
-      , canvasCSS = (ctx.settings || {}).canvasCSS || scriptSrc.replace(
+      , canvasCSS = settings.canvasCSS || scriptSrc.replace(
           reflectorJSRegex, '-canvas$2.css$3').toString()
       ;
 
@@ -41,53 +61,38 @@ class Widget {
       console.error('canvasCSS is missing');
     }
 
-    let content = `
-<head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="${canvasCSS}">
-</head>
-<body>
-  <div id="scrolliris_header">
-    <h1>Text Readability Heatmap<span class="label">BETA</span></h1>
-    <!-- <button class="btn close">close</button> -->
-  </div>
-  <div id="scrolliris_canvas_container"></div>
-  <div id="scrolliris_footer">
-    <p class="txt">Powered by
-      <a href="https://scrolliris.com/" target="_blank">Scrolliris</a></p>
-  </div>
-  <script async src="${canvasJS}"></script>
-</body>
-`;
-    content = content.replace(/\n/g, '');
     iframe.contentWindow.ScrollirisReadabilityReflector = {
       Context: ctx
     };
     iframe.contentWindow.document.open();
-    iframe.contentWindow.document.write(content);
+    iframe.contentWindow.document.write(
+      this._makeContent(btn, map, canvasJS, canvasCSS));
     iframe.contentWindow.document.close();
   }
 
-  _insertStyle() {
+  _insertStyle(frm) {
     let cssContent = `
 #scrolliris_container {
   position: fixed;
-  width: 0px;
-  height: 0px;
-  bottom: 0px;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  height: auto;
   left: 0px;
+  bottom: 0px;
   z-index: 9999999 !important;
 }
 
-#scrolliris_container .scrolliris-frame {
+#scrolliris_frame {
   z-index: 9999999 !important;
   position: fixed !important;
-  bottom: 9px;
+  margin: 0;
+  padding: 0;
+  width: ${frm.width}px;
+  height: ${frm.height}px;
   left: 9px;
-  width: 260px;
-  height: 400px;
-  border: 1px solid rgba(51, 51, 51, 0.18);
-  border-radius: 1px;
+  bottom: 9px;
+  border: 0;
 }
 `;
 
@@ -97,6 +102,137 @@ class Widget {
 
     let h = document.getElementsByTagName('head')[0];
     h.appendChild(style);
+  }
+
+  _buildComponents(widgetState) {
+    let map = {
+        state: (widgetState === 'active' ? 'block' : 'hidden')
+      , width: '260'
+      , height: '400'
+      }, btn = {
+        state: (widgetState === 'active' ? 'hidden' : 'block')
+      , width: '48'
+      , height: '48'
+      , src: 'https://img.scrolliris.io/icon/scrolliris-64x64.png'
+      };
+
+    let frm = {
+      width: (map.state === 'hidden' ? btn.width : map.width)
+    , height: (map.state === 'hidden' ? btn.height : map.height)
+    };
+
+    return [frm, map, btn];
+  }
+
+  _makeContent(btn, map, canvasJS, canvasCSS) {
+    let content = `
+<head>
+  <meta charset="utf-8">
+  <style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
+:focus {
+  outline: none;
+}
+
+::-moz-focus-inner {
+  border: 0;
+}
+
+#scrolliris_icon_container .btn,
+#scrolliris_minimap_container .btn {
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  outline-style: none;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+.hidden {
+  display: none;
+  border: 0;
+  width: 0;
+  height: 0;
+}
+
+#crolliris_widget {
+  margin: 0;
+  padding: 0;
+  width: auto;
+  height: auto;
+}
+
+#crolliris_widget .icon {
+  margin: 0 0 0 2px;
+  padding: 0;
+}
+
+#scrolliris_minimap_container {
+  max-width: 260px;
+  max-height: 400px;
+  border: 1px solid rgba(51, 51, 51, 0.18);
+  border-radius: 1px;
+}
+  </style>
+  <link rel="stylesheet" href="${canvasCSS}">
+</head>
+<body>
+  <div id="scrolliris_widget">
+    <div id="scrolliris_icon_container">
+      <button type="button" class="btn ${btn.state}" onclick="return toggleMinimap(this, event);">
+        <img class="icon" src="${btn.src}" alt="" width="${btn.width}" height="${btn.height}"></button>
+    </div>
+    <div id="scrolliris_minimap_container" class="${map.state}">
+      <div id="scrolliris_header">
+        <div class="header">
+          <h1 style="font-family:monospace;">READABILITY HEATMAP</h1>
+          <button type="button" class="btn close" onclick="return toggleMinimap(null, event)">×</button>
+        </div>
+      </div>
+      <div id="scrolliris_canvas_container"></div>
+      <div id="scrolliris_footer">
+        <p class="txt">Powered by <a href="https://about.scrolliris.com/" target="_blank">Scrolliris</a></p>
+      </div>
+    </div>
+  </div>
+  <script async src="${canvasJS}"></script>
+  <script>
+function _resetMinimap(minimap) {
+  var frame = window.parent.document.getElementById('scrolliris_frame');
+  if (minimap.classList.contains('hidden')) {
+    frame.setAttribute('style', 'height:48px;width:48px;');
+  } else {
+    frame.setAttribute('style', 'height:400px;width:260px;');
+  }
+}
+
+function toggleMinimap(self, e) {
+  e.preventDefault();
+  var minimap = document.getElementById('scrolliris_minimap_container');
+  minimap.classList.toggle('hidden');
+  _resetMinimap(minimap);
+  if (self !== null) {
+    self.classList.toggle('hidden');
+  } else {
+    var icon = document.getElementById('scrolliris_icon_container')
+      , btn = icon.querySelector('button')
+    ;
+    btn.classList.toggle('hidden');
+  }
+}
+  </script>
+</body>
+`;
+    return content.replace(/\n\s*/g, '');
   }
 }
 

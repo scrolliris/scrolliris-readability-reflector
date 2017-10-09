@@ -159,12 +159,6 @@ function makeCanvas(width, height) {
 }
 
 function drawCanvas(canvas, html, width, height, margin) {
-  rasterizeHTML.drawHTML(html, canvas, {
-    zoom: 0.5
-  , width: width
-  , height: height
-  });
-
   let dragging = false
     , lastY
     , marginTop = 0
@@ -183,6 +177,12 @@ function drawCanvas(canvas, html, width, height, margin) {
     canvas.style.cursor = 'grab';
     dragging = false;
   }, false);
+
+  rasterizeHTML.drawHTML(html, canvas, {
+    zoom: 0.5
+  , width: width
+  , height: height
+  });
 
   window.addEventListener('mousemove', (e) => {
     let evt = e || event;
@@ -204,7 +204,6 @@ function drawCanvas(canvas, html, width, height, margin) {
     canvas.style.cursor = 'grab';
     dragging = false;
   }, false);
-
 }
 
 ((doc, ctx) => {
@@ -235,13 +234,13 @@ function drawCanvas(canvas, html, width, height, margin) {
   let elements = collectElements(article, selectors)
     ;
 
-  // NOTE:
-  // Use <article>'s clientHeight?
+  // TODO:
+  // Remove magic number(s)
   let elm = doc.documentElement;
   let docWidth = Math.max(
-    doc.body.clientWidth, elm.clientWidth, elm.scrollWidth);
+    doc.body.scrollWidth, article.scrollWidth, elm.scrollWidth) / 0.5;
   let docHeight = Math.max(
-    doc.body.clientHeight, elm.clientHeight, elm.scrollHeight) * 1.7;
+    doc.body.scrollHeight, article.scrollHeight, elm.scrollHeight) / 0.5;
 
   let draw = (data) => {
     let html = buildHTML(data, elements)
