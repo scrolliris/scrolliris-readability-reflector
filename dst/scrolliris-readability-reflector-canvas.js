@@ -7130,12 +7130,6 @@ function makeCanvas(width, height) {
 }
 
 function drawCanvas(canvas, html, width, height, margin) {
-  _rasterizehtml2.default.drawHTML(html, canvas, {
-    zoom: 0.5,
-    width: width,
-    height: height
-  });
-
   var dragging = false,
       lastY = void 0,
       marginTop = 0,
@@ -7153,6 +7147,12 @@ function drawCanvas(canvas, html, width, height, margin) {
     canvas.style.cursor = 'grab';
     dragging = false;
   }, false);
+
+  _rasterizehtml2.default.drawHTML(html, canvas, {
+    zoom: 0.5,
+    width: width,
+    height: height
+  });
 
   window.addEventListener('mousemove', function (e) {
     var evt = e || event;
@@ -7202,11 +7202,11 @@ function drawCanvas(canvas, html, width, height, margin) {
   // collect elements
   var elements = collectElements(article, selectors);
 
-  // NOTE:
-  // Use <article>'s clientHeight?
+  // TODO:
+  // Remove magic number(s)
   var elm = doc.documentElement;
-  var docWidth = Math.max(doc.body.clientWidth, elm.clientWidth, elm.scrollWidth);
-  var docHeight = Math.max(doc.body.clientHeight, elm.clientHeight, elm.scrollHeight) * 1.7;
+  var docWidth = Math.max(doc.body.scrollWidth, article.scrollWidth, elm.scrollWidth) / 0.5;
+  var docHeight = Math.max(doc.body.scrollHeight, article.scrollHeight, elm.scrollHeight) / 0.5;
 
   var draw = function draw(data) {
     var html = buildHTML(data, elements),

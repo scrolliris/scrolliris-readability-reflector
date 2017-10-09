@@ -1,8 +1,3 @@
-body {
-  margin: 0;
-  padding: 0;
-  background: #fff;
-}
 #scrolliris_canvas_container {
   width: 242px !important;
   height: 325px !important;
@@ -25,10 +20,12 @@ body {
   min-height: 32px;
 }
 #scrolliris_header h1 {
+  display: inline-block;
   margin: 0;
-  padding: 8px 0 6px 6px;
-  font-size: 0.81em;
-  text-align: center;
+  padding: 8px 0 0 5px;
+  font-family: monospace;
+  font-size: 1.12em;
+  text-align: left;
 }
 #scrolliris_header h1 > span.label {
   font-family: monospace;
@@ -46,9 +43,16 @@ body {
   background: none;
   float: right;
 }
+#scrolliris_header .btn.close {
+  font-family: monospace;
+  font-size: 1.88em;
+  color: #888;
+  margin: 0 7px 0 0;
+  padding: 2px;
+}
 #scrolliris_footer {
   text-align: center;
-  height: 22px;
+  height: 23px;
   border-top: 1px solid #d3d3d3;
   background-color: #fff;
 }
