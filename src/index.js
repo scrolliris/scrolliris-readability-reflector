@@ -106,14 +106,14 @@ class Widget {
 
   _buildComponents(widgetState) {
     let map = {
-        state: (widgetState === 'active' ? 'block' : 'hidden')
+        state: (widgetState === 'inactive' ? 'hidden' : 'block')
       , width: '260'
       , height: '400'
       }, btn = {
-        state: (widgetState === 'active' ? 'hidden' : 'block')
+        state: (widgetState === 'inactive' ? 'block' : 'hidden')
       , width: '48'
       , height: '48'
-      , src: 'https://img.scrolliris.io/icon/scrolliris-64x64.png'
+      , src: 'https://img.scrolliris.io/icon/scrolliris-logo-white-64x64.png'
       };
 
     let frm = {
@@ -164,19 +164,20 @@ body {
   height: 0;
 }
 
-#crolliris_widget {
+#scrolliris_widget {
   margin: 0;
   padding: 0;
   width: auto;
   height: auto;
 }
 
-#crolliris_widget .icon {
-  margin: 0 0 0 2px;
+#scrolliris_widget .icon {
+  margin: 0;
   padding: 0;
 }
 
 #scrolliris_minimap_container {
+  background-color: #ffffff;
   max-width: 260px;
   max-height: 400px;
   border: 1px solid rgba(51, 51, 51, 0.18);
@@ -189,7 +190,7 @@ body {
   <div id="scrolliris_widget">
     <div id="scrolliris_icon_container">
       <button type="button" class="btn ${btn.state}" onclick="return toggleMinimap(this, event);">
-        <img class="icon" src="${btn.src}" alt="" width="${btn.width}" height="${btn.height}"></button>
+        <img class="icon" src="${btn.src}" alt="Scrolliris Icon" width="${btn.width}" height="${btn.height}"></button>
     </div>
     <div id="scrolliris_minimap_container" class="${map.state}">
       <div id="scrolliris_header">
