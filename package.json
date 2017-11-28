@@ -7,12 +7,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "gitlab.com:lupine-software/sihl"
+    "url": "gitlab.com:scrolliris/sihl"
   },
   "bugs": {
-    "url": "https://gitlab.com/lupine-software/sihl/issues"
+    "url": "https://gitlab.com/scrolliris/sihl/issues"
   },
-  "homepage": "https://gitlab.com/lupine-software/sihl",
+  "homepage": "https://gitlab.com/scrolliris/sihl",
   "author": "Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net> (https://grauwoelfchen.net)",
   "maintainers": [
     "Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net> (https://grauwoelfchen.net)"

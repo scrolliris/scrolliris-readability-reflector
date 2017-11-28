@@ -19,7 +19,7 @@ Sihl; ScrollirIs Honest readability refLector
 
 **Sihl** idnicates text readability heatmap data which is tracked based on the
 scroll event in a gentlemanly manner by [Siret](
-https://gitlab.com/lupine-software/siret).
+https://gitlab.com/scrolliris/siret).
 
 This project is text readibility indicator by [Scrolliris](
 https://about.scrolliris.com).  
@@ -28,7 +28,7 @@ It's called *Scrolliris Readability Reflector* as formal.
 
 ## Repository
 
-https://gitlab.com/lupine-software/sihl
+https://gitlab.com/scrolliris/sihl
 
 
 ## Requirements
@@ -114,8 +114,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 See [LICENSE](LICENSE).
 
 
-[pipeline]: https://gitlab.com/lupine-software/sihl/badges/master/pipeline.svg
-[coverage]: https://gitlab.com/lupine-software/sihl/badges/master/coverage.svg
-[commit]: https://gitlab.com/lupine-software/sihl/commits/master
+[pipeline]: https://gitlab.com/scrolliris/sihl/badges/master/pipeline.svg
+[coverage]: https://gitlab.com/scrolliris/sihl/badges/master/coverage.svg
+[commit]: https://gitlab.com/scrolliris/sihl/commits/master
 [version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
 [npm]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector
