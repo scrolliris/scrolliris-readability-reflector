@@ -1,25 +1,25 @@
-# Sihl
+# Sierre
 
-`/síl/`
+`/syĕr/`
 
-[![pipeline status][pipeline]][commit] [![coverage report][coverage]][commit] [
-![npm version][version]][npm]
+[![pipeline status][pipeline]][commit] [![coverage report][coverage]][commit]
+[![npm version][version]][npm]
 
-![Sihl Widget](example/img/sihl-widget.png)
+![Sierre Widget](example/img/sierre-widget.png)
 
 ```txt
-         _      _
-  () o  | |    | |
-  /\    | |    | |
- /  \|  |/ \   |/
-/(__/|_/|   |_/|__/
 
-Sihl; ScrollirIs Honest readability refLector
+  () o
+  /\     _   ,_    ,_    _
+ /  \|  |/  /  |  /  |  |/
+/(__/|_/|__/   |_/   |_/|__/
+
+Sierre; ScrollirIs honEst Readability REflector
 ```
 
-**Sihl** idnicates text readability heatmap data which is tracked based on the
-scroll event in a gentlemanly manner by [Siret](
-https://gitlab.com/scrolliris/siret).
+**Sierre** idnicates text readability heatmap data which is tracked based on
+the scroll event in a gentlemanly manner by [Stäfa](
+https://gitlab.com/scrolliris/staefa).
 
 This project is text readibility indicator by [Scrolliris](
 https://about.scrolliris.com).  
@@ -28,7 +28,7 @@ It's called *Scrolliris Readability Reflector* as formal.
 
 ## Repository
 
-https://gitlab.com/scrolliris/sihl
+https://gitlab.com/scrolliris/sierre
 
 
 ## Requirements
@@ -87,7 +87,7 @@ settings takes...
 ## License
 
 ```txt
-Sihl
+Sierre
 Copyright (c) 2017 Lupine Software LLC
 ```
 
@@ -114,8 +114,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 See [LICENSE](LICENSE).
 
 
-[pipeline]: https://gitlab.com/scrolliris/sihl/badges/master/pipeline.svg
-[coverage]: https://gitlab.com/scrolliris/sihl/badges/master/coverage.svg
-[commit]: https://gitlab.com/scrolliris/sihl/commits/master
+[pipeline]: https://gitlab.com/scrolliris/sierre/badges/master/pipeline.svg
+[coverage]: https://gitlab.com/scrolliris/sierre/badges/master/coverage.svg
+[commit]: https://gitlab.com/scrolliris/sierre/commits/master
 [version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
 [npm]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector

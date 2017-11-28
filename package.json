@@ -1,19 +1,19 @@
 {
   "name": "@lupine-software/scrolliris-readability-reflector",
   "version": "0.0.20",
-  "description": "Text Readability Reflector by Scrolliris (Code Name: Sihl)",
+  "description": "Text Readability Reflector by Scrolliris (Code Name: Sierre)",
   "scripts": {
     "test": "karma start || cat coverage/text-summary.txt"
   },
   "repository": {
     "type": "git",
-    "url": "gitlab.com:scrolliris/sihl"
+    "url": "gitlab.com:scrolliris/sierre"
   },
   "bugs": {
-    "url": "https://gitlab.com/scrolliris/sihl/issues"
+    "url": "https://gitlab.com/scrolliris/sierre/issues"
   },
-  "homepage": "https://gitlab.com/scrolliris/sihl",
-  "author": "Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net> (https://grauwoelfchen.net)",
+  "homepage": "https://gitlab.com/scrolliris/sierre",
+  "author": "Lupine Software LLC",
   "maintainers": [
     "Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net> (https://grauwoelfchen.net)"
   ],
