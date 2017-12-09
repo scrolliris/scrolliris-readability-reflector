@@ -89,36 +89,39 @@ var runUglify = function(filename) {
 
 var prefix = 'scrolliris-readability-'
 
+// reflector.js
 gulp.task('build:browserify:index',
   runBrowserify('index.js', prefix + 'reflector.js'));
-
-gulp.task('build:browserify:browser',
-  runBrowserify('browser.js', prefix + 'reflector-browser.js'));
-
-gulp.task('build:browserify:canvas',
-  runBrowserify('canvas.js', prefix + 'reflector-canvas.js'));
-
-gulp.task('build:compileCSS:canvas', function () {
-  return gulp.src('./src/canvas.styl')
-    .pipe(stylus())
-    .pipe(rename(function(file) {
-      file.basename = prefix + 'reflector-canvas';
-    }))
-    .pipe(gulp.dest('./dst/'));
-});
 
 gulp.task('build:uglify:index',
   runUglify(prefix + 'reflector.js'));
 
+// reflector-browser.js
+gulp.task('build:browserify:browser',
+  runBrowserify('browser.js', prefix + 'reflector-browser.js'));
+
 gulp.task('build:uglify:browser',
   runUglify(prefix + 'reflector-browser.js'));
 
-gulp.task('build:uglify:canvas',
-  runUglify(prefix + 'reflector-canvas.js'));
+// reflector-minimap.js (minimap extension)
+gulp.task('build:browserify:minimap',
+  runBrowserify('minimap.js', prefix + 'reflector-minimap.js'));
 
-gulp.task('build:minify:canvas', function () {
+gulp.task('build:compileCSS:minimap', function () {
+  return gulp.src('./src/minimap.styl')
+    .pipe(stylus())
+    .pipe(rename(function(file) {
+      file.basename = prefix + 'reflector-minimap';
+    }))
+    .pipe(gulp.dest('./dst/'));
+});
+
+gulp.task('build:uglify:minimap',
+  runUglify(prefix + 'reflector-minimap.js'));
+
+gulp.task('build:minify:minimap', function () {
   return pump([
-      gulp.src(['./dst/' + prefix + 'reflector-canvas.css'])
+      gulp.src(['./dst/' + prefix + 'reflector-minimap.css'])
     , sourcemaps.init({
         loadMaps: true
       })
@@ -129,6 +132,7 @@ gulp.task('build:minify:canvas', function () {
     ]);
 });
 
+// build entry point
 gulp.task('build:index', ['env'], function() {
   return sequence(
     'build:browserify:index'
@@ -143,16 +147,20 @@ gulp.task('build:browser', ['env'], function() {
   );
 });
 
-gulp.task('build:canvas', ['env'], function() {
+gulp.task('build:minimap', ['env'], function() {
   return sequence(
-    'build:browserify:canvas'
-  , 'build:uglify:canvas'
-  , 'build:compileCSS:canvas'
-  , 'build:minify:canvas'
+    'build:browserify:minimap'
+  , 'build:uglify:minimap'
+  , 'build:compileCSS:minimap'
+  , 'build:minify:minimap'
   );
 });
 
-gulp.task('build', ['build:browser', 'build:index', 'build:canvas']);
+gulp.task('build', [
+  'build:browser'
+, 'build:index'
+, 'build:minimap'
+]);
 
 
 // -- testing tasks
@@ -246,11 +254,11 @@ var paths = {
   browser: [
     path.join('src', 'bworser.js')
   ]
-, canvas: [
-    path.join('src', 'canvas.*')
-  ]
 , index: [
     path.join('src', 'index.js')
+  ]
+, minimap: [
+    path.join('src', 'minimap.*')
   ]
 };
 
@@ -258,8 +266,8 @@ var paths = {
 gulp.task('watch', ['env'], function() {
   gulp.watch('gulpfile.js', ['build']);
   gulp.watch(paths.browser, ['build:browser', 'build:index']);
-  gulp.watch(paths.canvas, ['build:canvas']);
   gulp.watch(paths.index, ['build:index', 'build:browser']);
+  gulp.watch(paths.minimap, ['build:minimap']);
 });
 
 

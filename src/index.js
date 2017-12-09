@@ -15,18 +15,21 @@ class Widget {
     this._insertStyle(frm);
 
     /**
-     * Note:
+     * NOTE:
      *
-     * ```
+     * DOM Structure
+     *
      * div#scrolliris_container
      *   iframe#scrolliris_frame
      *     html
      *       body
      *         div#scrolliris_widget
      *           div#scrolliris_icon_container
+     *           (minimap)
      *           div#scrolliris_minimap_container
-     *             div#scrolliris_canvas_container
-     * ```
+     *             div#scrolliris_minimap_canvas_container
+     *           (overlay)
+     *           none
     */
 
     // iframe
@@ -42,31 +45,34 @@ class Widget {
     let currentScript = ctx.currentScript || document.currentScript
       , scriptSrc = currentScript.getAttribute('src') || ''
       ;
-    // This part assumes -canvas.{js|css} are both hosted in same location
-    // as -browser.js.
+    // This part assumes -(minimap|overlay).(js|css) are both hosted in
+    // same location as current script.
     //
-    // reflector.js         --> reflector-canvas.js,.css
-    // reflector-browser.js --> reflector-canvas.js,.css
+    // reflector.js         --> reflector-(minimap|overlay).js,.css
+    // reflector-browser.js --> reflector-(minimap|overlay).js,.css
     let reflectorJSRegex = /(-browser)?(\.min)?\.js(\?)?/;
-    let canvasJS = settings.canvasJS || scriptSrc.replace(
-          reflectorJSRegex, '-canvas$2.js$3').toString()
-      , canvasCSS = settings.canvasCSS || scriptSrc.replace(
-          reflectorJSRegex, '-canvas$2.css$3').toString()
-      ;
+    let src = {};
 
-    if (canvasJS === '') {
-      console.error('canvasJS is missing');
+    // -- minimap
+    src.js = settings.minimap.js || scriptSrc.replace(
+      reflectorJSRegex, '-minimap$2.js$3').toString();
+    src.css = settings.minimap.css || scriptSrc.replace(
+      reflectorJSRegex, '-minimap$2.css$3').toString();
+
+    if (src.js === '' || src.css === '') {
+      console.error('widget source (js|css) is missing');
     }
-    if (canvasCSS === '') {
-      console.error('canvasCSS is missing');
-    }
+
+    // -- overlay
+    // TODO
+
+    let widget = this._makeMinimap(btn, map, src.js, src.css);
 
     iframe.contentWindow.ScrollirisReadabilityReflector = {
       Context: ctx
     };
     iframe.contentWindow.document.open();
-    iframe.contentWindow.document.write(
-      this._makeContent(btn, map, canvasJS, canvasCSS));
+    iframe.contentWindow.document.write(widget);
     iframe.contentWindow.document.close();
   }
 
@@ -124,7 +130,7 @@ class Widget {
     return [frm, map, btn];
   }
 
-  _makeContent(btn, map, canvasJS, canvasCSS) {
+  _makeMinimap(btn, map, js, css) {
     let content = `
 <head>
   <meta charset="utf-8">
@@ -184,7 +190,7 @@ body {
   border-radius: 1px;
 }
   </style>
-  <link rel="stylesheet" href="${canvasCSS}">
+  <link rel="stylesheet" href="${css}">
 </head>
 <body>
   <div id="scrolliris_widget">
@@ -199,13 +205,13 @@ body {
           <button type="button" class="btn close" onclick="return toggleMinimap(null, event)">×</button>
         </div>
       </div>
-      <div id="scrolliris_canvas_container"></div>
+      <div id="scrolliris_minimap_canvas_container"></div>
       <div id="scrolliris_footer">
         <p class="txt">Powered by <a href="https://about.scrolliris.com/" target="_blank">Scrolliris</a></p>
       </div>
     </div>
   </div>
-  <script async src="${canvasJS}"></script>
+  <script async src="${js}"></script>
   <script>
 function _resetMinimap(minimap) {
   var frame = window.parent.document.getElementById('scrolliris_frame');

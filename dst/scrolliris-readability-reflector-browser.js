@@ -82,18 +82,21 @@ var Widget = function () {
       this._insertStyle(frm);
 
       /**
-       * Note:
+       * NOTE:
        *
-       * ```
+       * DOM Structure
+       *
        * div#scrolliris_container
        *   iframe#scrolliris_frame
        *     html
        *       body
        *         div#scrolliris_widget
        *           div#scrolliris_icon_container
+       *           (minimap)
        *           div#scrolliris_minimap_container
-       *             div#scrolliris_canvas_container
-       * ```
+       *             div#scrolliris_minimap_canvas_container
+       *           (overlay)
+       *           none
       */
 
       // iframe
@@ -108,27 +111,32 @@ var Widget = function () {
 
       var currentScript = ctx.currentScript || document.currentScript,
           scriptSrc = currentScript.getAttribute('src') || '';
-      // This part assumes -canvas.{js|css} are both hosted in same location
-      // as -browser.js.
+      // This part assumes -(minimap|overlay).(js|css) are both hosted in
+      // same location as current script.
       //
-      // reflector.js         --> reflector-canvas.js,.css
-      // reflector-browser.js --> reflector-canvas.js,.css
+      // reflector.js         --> reflector-(minimap|overlay).js,.css
+      // reflector-browser.js --> reflector-(minimap|overlay).js,.css
       var reflectorJSRegex = /(-browser)?(\.min)?\.js(\?)?/;
-      var canvasJS = settings.canvasJS || scriptSrc.replace(reflectorJSRegex, '-canvas$2.js$3').toString(),
-          canvasCSS = settings.canvasCSS || scriptSrc.replace(reflectorJSRegex, '-canvas$2.css$3').toString();
+      var src = {};
 
-      if (canvasJS === '') {
-        console.error('canvasJS is missing');
+      // -- minimap
+      src.js = settings.minimap.js || scriptSrc.replace(reflectorJSRegex, '-minimap$2.js$3').toString();
+      src.css = settings.minimap.css || scriptSrc.replace(reflectorJSRegex, '-minimap$2.css$3').toString();
+
+      if (src.js === '' || src.css === '') {
+        console.error('widget source (js|css) is missing');
       }
-      if (canvasCSS === '') {
-        console.error('canvasCSS is missing');
-      }
+
+      // -- overlay
+      // TODO
+
+      var widget = this._makeMinimap(btn, map, src.js, src.css);
 
       iframe.contentWindow.ScrollirisReadabilityReflector = {
         Context: ctx
       };
       iframe.contentWindow.document.open();
-      iframe.contentWindow.document.write(this._makeContent(btn, map, canvasJS, canvasCSS));
+      iframe.contentWindow.document.write(widget);
       iframe.contentWindow.document.close();
     }
   }, {
@@ -166,9 +174,9 @@ var Widget = function () {
       return [frm, map, btn];
     }
   }, {
-    key: '_makeContent',
-    value: function _makeContent(btn, map, canvasJS, canvasCSS) {
-      var content = '\n<head>\n  <meta charset="utf-8">\n  <style>\nbody {\n  margin: 0;\n  padding: 0;\n}\n\n:focus {\n  outline: none;\n}\n\n::-moz-focus-inner {\n  border: 0;\n}\n\n#scrolliris_icon_container .btn,\n#scrolliris_minimap_container .btn {\n  cursor: pointer;\n  margin: 0;\n  padding: 0;\n  outline: 0;\n  outline-style: none;\n  border: 0;\n  background: none;\n  box-shadow: none;\n  appearance: none;\n  -moz-appearance: none;\n  -webkit-appearance: none;\n}\n\n.hidden {\n  display: none;\n  border: 0;\n  width: 0;\n  height: 0;\n}\n\n#scrolliris_widget {\n  margin: 0;\n  padding: 0;\n  width: auto;\n  height: auto;\n}\n\n#scrolliris_widget .icon {\n  margin: 0;\n  padding: 0;\n}\n\n#scrolliris_minimap_container {\n  background-color: #ffffff;\n  max-width: 260px;\n  max-height: 400px;\n  border: 1px solid rgba(51, 51, 51, 0.18);\n  border-radius: 1px;\n}\n  </style>\n  <link rel="stylesheet" href="' + canvasCSS + '">\n</head>\n<body>\n  <div id="scrolliris_widget">\n    <div id="scrolliris_icon_container">\n      <button type="button" class="btn ' + btn.state + '" onclick="return toggleMinimap(this, event);">\n        <img class="icon" src="' + btn.src + '" alt="Scrolliris Icon" width="' + btn.width + '" height="' + btn.height + '"></button>\n    </div>\n    <div id="scrolliris_minimap_container" class="' + map.state + '">\n      <div id="scrolliris_header">\n        <div class="header">\n          <h1 style="font-family:monospace;">READABILITY HEATMAP</h1>\n          <button type="button" class="btn close" onclick="return toggleMinimap(null, event)">\xD7</button>\n        </div>\n      </div>\n      <div id="scrolliris_canvas_container"></div>\n      <div id="scrolliris_footer">\n        <p class="txt">Powered by <a href="https://about.scrolliris.com/" target="_blank">Scrolliris</a></p>\n      </div>\n    </div>\n  </div>\n  <script async src="' + canvasJS + '"></script>\n  <script>\nfunction _resetMinimap(minimap) {\n  var frame = window.parent.document.getElementById(\'scrolliris_frame\');\n  if (minimap.classList.contains(\'hidden\')) {\n    frame.setAttribute(\'style\', \'height:48px;width:48px;\');\n  } else {\n    frame.setAttribute(\'style\', \'height:400px;width:260px;\');\n  }\n}\n\nfunction toggleMinimap(self, e) {\n  e.preventDefault();\n  var minimap = document.getElementById(\'scrolliris_minimap_container\');\n  minimap.classList.toggle(\'hidden\');\n  _resetMinimap(minimap);\n  if (self !== null) {\n    self.classList.toggle(\'hidden\');\n  } else {\n    var icon = document.getElementById(\'scrolliris_icon_container\')\n      , btn = icon.querySelector(\'button\')\n    ;\n    btn.classList.toggle(\'hidden\');\n  }\n}\n  </script>\n</body>\n';
+    key: '_makeMinimap',
+    value: function _makeMinimap(btn, map, js, css) {
+      var content = '\n<head>\n  <meta charset="utf-8">\n  <style>\nbody {\n  margin: 0;\n  padding: 0;\n}\n\n:focus {\n  outline: none;\n}\n\n::-moz-focus-inner {\n  border: 0;\n}\n\n#scrolliris_icon_container .btn,\n#scrolliris_minimap_container .btn {\n  cursor: pointer;\n  margin: 0;\n  padding: 0;\n  outline: 0;\n  outline-style: none;\n  border: 0;\n  background: none;\n  box-shadow: none;\n  appearance: none;\n  -moz-appearance: none;\n  -webkit-appearance: none;\n}\n\n.hidden {\n  display: none;\n  border: 0;\n  width: 0;\n  height: 0;\n}\n\n#scrolliris_widget {\n  margin: 0;\n  padding: 0;\n  width: auto;\n  height: auto;\n}\n\n#scrolliris_widget .icon {\n  margin: 0;\n  padding: 0;\n}\n\n#scrolliris_minimap_container {\n  background-color: #ffffff;\n  max-width: 260px;\n  max-height: 400px;\n  border: 1px solid rgba(51, 51, 51, 0.18);\n  border-radius: 1px;\n}\n  </style>\n  <link rel="stylesheet" href="' + css + '">\n</head>\n<body>\n  <div id="scrolliris_widget">\n    <div id="scrolliris_icon_container">\n      <button type="button" class="btn ' + btn.state + '" onclick="return toggleMinimap(this, event);">\n        <img class="icon" src="' + btn.src + '" alt="Scrolliris Icon" width="' + btn.width + '" height="' + btn.height + '"></button>\n    </div>\n    <div id="scrolliris_minimap_container" class="' + map.state + '">\n      <div id="scrolliris_header">\n        <div class="header">\n          <h1 style="font-family:monospace;">READABILITY HEATMAP</h1>\n          <button type="button" class="btn close" onclick="return toggleMinimap(null, event)">\xD7</button>\n        </div>\n      </div>\n      <div id="scrolliris_minimap_canvas_container"></div>\n      <div id="scrolliris_footer">\n        <p class="txt">Powered by <a href="https://about.scrolliris.com/" target="_blank">Scrolliris</a></p>\n      </div>\n    </div>\n  </div>\n  <script async src="' + js + '"></script>\n  <script>\nfunction _resetMinimap(minimap) {\n  var frame = window.parent.document.getElementById(\'scrolliris_frame\');\n  if (minimap.classList.contains(\'hidden\')) {\n    frame.setAttribute(\'style\', \'height:48px;width:48px;\');\n  } else {\n    frame.setAttribute(\'style\', \'height:400px;width:260px;\');\n  }\n}\n\nfunction toggleMinimap(self, e) {\n  e.preventDefault();\n  var minimap = document.getElementById(\'scrolliris_minimap_container\');\n  minimap.classList.toggle(\'hidden\');\n  _resetMinimap(minimap);\n  if (self !== null) {\n    self.classList.toggle(\'hidden\');\n  } else {\n    var icon = document.getElementById(\'scrolliris_icon_container\')\n      , btn = icon.querySelector(\'button\')\n    ;\n    btn.classList.toggle(\'hidden\');\n  }\n}\n  </script>\n</body>\n';
       return content.replace(/\n\s*/g, '');
     }
   }]);

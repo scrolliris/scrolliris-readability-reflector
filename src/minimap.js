@@ -148,10 +148,11 @@ function buildHTML(data, elements) {
 }
 
 function makeCanvas(width, height) {
-  let container = document.getElementById('scrolliris_canvas_container')
+  let container = document.getElementById(
+        'scrolliris_minimap_canvas_container')
     , canvas = document.createElement('canvas')
     ;
-  canvas.setAttribute('id', 'scrolliris_canvas');
+  canvas.setAttribute('id', 'scrolliris_minimap_canvas');
   canvas.setAttribute('width', width* 0.5);
   canvas.setAttribute('height', height * 0.5);
   container.appendChild(canvas);
