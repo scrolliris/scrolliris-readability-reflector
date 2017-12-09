@@ -33,7 +33,8 @@ https://gitlab.com/scrolliris/sierre
 
 ## Requirements
 
-* Node.js `7.10.1` (build)
+* Node.js `8.9.0` (build)
+* npm `>= 5.6.0`
 
 
 ## Install
