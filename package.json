@@ -28,7 +28,7 @@
     "rasterizehtml": "1.2.4"
   },
   "engines": {
-    "node": "7.10.1"
+    "node": "8.9.0"
   },
   "devDependencies": {
     "babel-plugin-istanbul": "4.1.4",
