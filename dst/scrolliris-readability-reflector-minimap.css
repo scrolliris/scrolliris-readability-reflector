@@ -1,9 +1,3 @@
-#scrolliris_minimap_container {
-  width: 242px !important;
-  height: 325px !important;
-  margin: 0 auto 0 3px;
-  overflow: hidden;
-}
 #scrolliris_header,
 #scrolliris_footer {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -15,9 +9,9 @@
 }
 #scrolliris_header {
   text-align: left;
-  height: 22px;
-  border-bottom: 1px solid #d3d3d3;
+  height: 32px;
   min-height: 32px;
+  border-bottom: 1px solid #d3d3d3;
 }
 #scrolliris_header h1 {
   display: inline-block;
@@ -53,6 +47,7 @@
 #scrolliris_footer {
   text-align: center;
   height: 23px;
+  min-height: 23px;
   border-top: 1px solid #d3d3d3;
   background-color: #fff;
 }
@@ -62,7 +57,13 @@
   margin: 7px 0 5px 0;
   padding: 0;
 }
-#scrolliris_minimap {
+#scrolliris_minimap_canvas_container {
+  width: 242px !important;
+  height: 325px !important;
+  margin: 0 auto 0 3px;
+  overflow: hidden;
+}
+#scrolliris_minimap_canvas {
   margin: 0;
   padding: 0;
   cursor: grab;
