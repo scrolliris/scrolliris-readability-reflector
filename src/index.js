@@ -54,10 +54,10 @@ class Widget {
     let src = {};
 
     // -- minimap
-    src.js = settings.minimap.js || scriptSrc.replace(
-      reflectorJSRegex, '-minimap$2.js$3').toString();
-    src.css = settings.minimap.css || scriptSrc.replace(
-      reflectorJSRegex, '-minimap$2.css$3').toString();
+    src.js = settings.hasOwnProperty('minimap') ? settings.minimap.js :
+      scriptSrc.replace(reflectorJSRegex, '-minimap$2.js$3').toString();
+    src.css = settings.hasOwnProperty('minimap') ? settings.minimap.css :
+      scriptSrc.replace(reflectorJSRegex, '-minimap$2.css$3').toString();
 
     if (src.js === '' || src.css === '') {
       console.error('widget source (js|css) is missing');
