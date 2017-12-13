@@ -119,7 +119,7 @@ class Widget {
         state: (widgetState === 'inactive' ? 'block' : 'hidden')
       , width: '48'
       , height: '48'
-      , src: 'https://img.scrolliris.io/icon/scrolliris-logo-white-64x64.png'
+      , src: 'https://img.scrolliris.com/icon/scrolliris-logo-white-64x64.png'
       };
 
     let frm = {
