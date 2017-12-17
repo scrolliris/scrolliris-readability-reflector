@@ -5,7 +5,8 @@
 [![pipeline status][pipeline]][commit] [![coverage report][coverage]][commit]
 [![npm version][version]][npm]
 
-![Sierre Widget](example/img/sierre-widget.png)
+![Sierre Widget](example/img/sierre-widget.png)  
+(minimap)
 
 ```txt
 
@@ -24,6 +25,8 @@ https://gitlab.com/scrolliris/staefa).
 This project is text readibility indicator by [Scrolliris](
 https://about.scrolliris.com).  
 It's called *Scrolliris Readability Reflector* as formal.
+
+There are 2 extensions `minimap` and `overlay` which are built using iframe.
 
 
 ## Repository
