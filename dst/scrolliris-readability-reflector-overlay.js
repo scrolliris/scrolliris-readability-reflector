@@ -133,129 +133,160 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _util = require('./_util');
 
-(function (win, doc) {
-  var frame = win.parent.document.getElementById('scrolliris_frame');
-  var layer = doc.getElementById('scrolliris_item_container');
-
-  var position = { // initial position
-    y: 0,
-    x: 0
-  };
-
-  var setPosition = function setPosition(y, x) {
-    if (!layer.classList.contains('hidden')) {
-      frame.style.top = position.y - y + 'px';
-      frame.style.left = position.x - x + 'px';
-    } else {
-      frame.style.top = '';
-      frame.style.left = '';
-      frame.style.bottom = '0';
-    }
-  };
-
-  // an observer for the change class `.hidden` toggling
-  var callback = function callback(ml) {
-    if (ml.length > 1) {
-      return;
-    }
-    var m = ml[0];
-    if (m.type === 'attributes' && m.attributeName === 'class') {
-      // parent page offset values
-      setPosition(win.parent.pageYOffset, win.parent.pageXOffset);
-    }
-  };
-  var observer = new MutationObserver(callback);
-  observer.observe(layer, { attributes: true });
-
-  // synchronize with the scroll event on parent document
-  win.parent.document.addEventListener('scroll', function (e) {
-    // TODO: check more browsers
-    if ('path' in e) {
-      // chromium
-      if (e.path.length !== 2) {
-        return;
-      }
-      var w = e.path[1];
-      setPosition(w.pageYOffset, e.pageXOffset);
-    } else {
-      // firefox
-      setPosition(e.pageY, e.pageX);
-    }
-  });
-})(window, document);
-
 (function (win, doc, ctx) {
-  var config = {},
-      settings = {},
-      options = {};
+  var layElements = function layElements() {
+    /**
+     * Renders elements which has colored background based on received data
+     * into `overlay_container`
+     *
+     * Invokes a async fetch request to API server.
+     */
+    var config = {},
+        settings = {},
+        options = {};
 
-  if (ctx.hasOwnProperty('config') && _typeof(ctx.config) === 'object') {
-    config = ctx['config'];
-    // pass
-  }
-  if (ctx.hasOwnProperty('settings') && _typeof(ctx.options) === 'object') {
-    settings = ctx['settings'];
-    if (!settings.endpointURL) {
-      console.error('endpointURL is required');
-      return false;
+    if (ctx.hasOwnProperty('config') && _typeof(ctx.config) === 'object') {
+      config = ctx['config'];
+      // pass
     }
-  }
-  if (ctx.hasOwnProperty('options') && _typeof(ctx.options) === 'object') {
-    options = ctx['options'];
-  }
+    if (ctx.hasOwnProperty('settings') && _typeof(ctx.options) === 'object') {
+      settings = ctx['settings'];
+      if (!settings.endpointURL) {
+        console.error('endpointURL is required');
+        return false;
+      }
+    }
+    if (ctx.hasOwnProperty('options') && _typeof(ctx.options) === 'object') {
+      options = ctx['options'];
+    }
 
-  var selectors = options.selectors || {};
-  var article = win.parent.document.querySelector(selectors.article || 'body article');
+    var selectors = options.selectors || {};
+    var article = win.parent.document.querySelector(selectors.article || 'body article');
 
-  // collect elements
-  var elements = (0, _util.collectElements)(article, selectors);
+    // collect elements
+    var elements = (0, _util.collectElements)(article, selectors);
 
-  var draw = function draw(data) {
-    var offset = {
-      x: window.parent.pageXOffset,
-      y: window.parent.pageYOffset
+    var draw = function draw(data) {
+      var offset = {
+        x: win.parent.pageXOffset,
+        y: win.parent.pageYOffset
+      };
+
+      var html = (0, _util.buildHTML)(data, Array.from(elements).map(function (e) {
+        var rect = e.getBoundingClientRect();
+        var newNode = doc.importNode(e, true);
+        if (!newNode) {
+          return e;
+        } else {
+          // set position
+          newNode.style.padding = '0';
+          newNode.style.margin = '0';
+
+          newNode.style.fontFamily = (0, _util.getStyle)(e, 'font-family');
+          newNode.style.fontSize = (0, _util.getStyle)(e, 'font-size');
+          newNode.style.lineHeight = (0, _util.getStyle)(e, 'line-height');
+          newNode.style.letterSpacing = (0, _util.getStyle)(e, 'letter-spacing');
+
+          newNode.style.position = 'absolute';
+          newNode.style.top = rect.top + offset.y + 'px';
+          newNode.style.left = rect.left + offset.x + 'px';
+          newNode.style.right = rect.right + 'px';
+          newNode.style.width = rect.width + 'px';
+          newNode.style.height = rect.height + 'px';
+
+          // additional
+          newNode.style.color = 'transparent';
+          return newNode;
+        }
+      }));
+
+      var container = doc.getElementById('scrolliris_overlay_container');
+      container.innerHTML = html;
     };
 
-    var html = (0, _util.buildHTML)(data, Array.from(elements).map(function (e) {
-      var rect = e.getBoundingClientRect();
-      var newNode = doc.importNode(e, true);
-      if (!newNode) {
-        return e;
-      } else {
-        // set position
-        newNode.style.padding = '0';
-        newNode.style.margin = '0';
-
-        newNode.style.fontFamily = (0, _util.getStyle)(e, 'font-family');
-        newNode.style.fontSize = (0, _util.getStyle)(e, 'font-size');
-        newNode.style.lineHeight = (0, _util.getStyle)(e, 'line-height');
-        newNode.style.letterSpacing = (0, _util.getStyle)(e, 'letter-spacing');
-
-        newNode.style.position = 'absolute';
-        newNode.style.top = rect.top + offset.y + 'px';
-        newNode.style.left = rect.left + offset.x + 'px';
-        newNode.style.right = rect.right + 'px';
-        newNode.style.width = rect.width + 'px';
-        newNode.style.height = rect.height + 'px';
-
-        // additional
-        newNode.style.color = 'transparent';
-        return newNode;
-      }
-    }));
-
-    var container = doc.getElementById('scrolliris_overlay_container');
-    container.innerHTML = html;
+    (0, _util.fetchResultData)(settings.endpointURL, settings.csrfToken, function (data) {
+      // resolve
+      draw(data);
+    }, function (data) {
+      // reject
+      // FIXME
+      draw(data);
+    });
   };
 
-  (0, _util.fetchResultData)(settings.endpointURL, settings.csrfToken, function (data) {
-    // resolve
-    draw(data);
-  }, function (data) {
-    // reject
-    // FIXME
-    draw(data);
-  });
+  var putLayer = function putLayer() {
+    /**
+     * Sets layer position by scroll event and toggle button click.
+     *
+     * Puts `item_container` to valid position.
+     */
+    var layer = doc.getElementById('scrolliris_item_container');
+
+    var position = { // initial position
+      y: 0,
+      x: 0
+    };
+
+    var setPosition = function setPosition(y, x) {
+      if (!layer.classList.contains('hidden')) {
+        layer.style.top = position.y - y + 'px';
+        layer.style.left = position.x - x + 'px';
+      } else {
+        layer.style.top = '';
+        layer.style.left = '';
+        layer.style.bottom = '0';
+      }
+    };
+
+    // at rendering time (avoid layout flashing)
+    setPosition(win.parent.pageYOffset, win.parent.pageXOffset);
+
+    // an observer for the change class `.hidden` toggling
+    var callback = function callback(r) {
+      // get only a target mutation record
+      var r_filtered = r.filter(function (m) {
+        return m.attributeName === 'class';
+      });
+      if (r_filtered.length !== 1) {
+        return;
+      }
+      var m = r_filtered[0];
+      if (m.type === 'attributes' && m.attributeName === 'class') {
+        // parent page offset values
+        setPosition(win.parent.pageYOffset, win.parent.pageXOffset);
+      }
+    };
+    var observer = new MutationObserver(callback);
+    observer.observe(layer, { attributes: true });
+
+    // synchronize with the scroll event on parent document
+    win.parent.document.addEventListener('scroll', function (e) {
+      // TODO: check more browsers
+      if ('path' in e) {
+        // chromium
+        if (e.path.length !== 2) {
+          return;
+        }
+        var w = e.path[1];
+        setPosition(w.pageYOffset, e.pageXOffset);
+      } else {
+        // firefox
+        setPosition(e.pageY, e.pageX);
+      }
+    });
+  };
+
+  var run = function run(actions) {
+    var result = Promise.resolve();
+    actions.forEach(function (action) {
+      result = result.then(function () {
+        return action();
+      });
+    });
+    return result;
+  };
+
+  run([putLayer, layElements]);
 })(window, document, (window.ScrollirisReadabilityReflector || {}).Context);
 
 },{"./_util":1}]},{},[2]);
