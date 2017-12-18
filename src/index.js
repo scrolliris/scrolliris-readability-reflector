@@ -67,9 +67,8 @@ class Widget {
   }
 
   _buildStyle(itm) {
-    let _size = (itm.state === 'block' ? '100%' : 'auto');
-    let width = _size
-      , height = _size
+    let width = (itm.state === 'block' ? itm.width : 'auto')
+      , height = (itm.state === 'block' ? itm.height : 'auto')
       ;
     return `
 #scrolliris_container {
@@ -116,7 +115,8 @@ class Widget {
     let itm;
     if (extension === 'overlay') {
       itm = {
-          state: (initialState === 'inactive' ? 'hidden' : 'block')
+          class: 'overlay'
+        , state: (initialState === 'inactive' ? 'hidden' : 'block')
         , width: '100%'
         , height: document.body.scrollHeight + (
           // remains scrollable length
@@ -124,7 +124,8 @@ class Widget {
       };
     } else { // minimap (default)
       itm = {
-          state: (initialState === 'inactive' ? 'hidden' : 'block')
+          class: 'minimap'
+        , state: (initialState === 'inactive' ? 'hidden' : 'block')
         , width: this._minimapWidth + 'px'
         , height: this._minimapHeight + 'px'
       };
@@ -206,7 +207,6 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;
 }
 
 #scrolliris_icon_container {
@@ -257,8 +257,8 @@ function _resetWidget(itm) {
     itm.style.width = '0px';
     itm.style.height = '0px';
   } else {
-    frm.style.width = '100%';
-    frm.style.height = '100%';
+    frm.style.width = '${itm.class === 'overlay' ? '100%' : itm.width}';
+    frm.style.height = '${itm.class === 'overlay' ? '100%' : itm.height}';
     itm.style.width = '${itm.width}';
     itm.style.height = '${itm.height}';
   }
@@ -270,12 +270,17 @@ function toggleItem(slf, e) {
   itm.classList.toggle('hidden');
   _resetWidget(itm);
   var icn = document.getElementById('scrolliris_icon_container')
-    , img = icn.querySelector('img')
     ;
-  if (itm.classList.contains('hidden')) {
-    img.setAttribute('src', '${btn.src.on}');
-  } else {
-    img.setAttribute('src', '${btn.src.off}');
+  if (itm.classList.contains('overlay')) {
+    var img = icn.querySelector('img');
+    if (itm.classList.contains('hidden')) {
+      img.setAttribute('src', '${btn.src.on}');
+    } else {
+      img.setAttribute('src', '${btn.src.off}');
+    }
+  } else if (itm.classList.contains('minimap')) {
+    var btn = icn.querySelector('button');
+    btn.classList.toggle('hidden');
   }
 }`;
   }
@@ -290,7 +295,7 @@ function toggleItem(slf, e) {
 <body>
   <div id="scrolliris_widget">
     <div id="scrolliris_item_container"
-      class="ext${itm.state === 'hidden' ? ' hidden' : ''}">
+      class="minimap${itm.state === 'hidden' ? ' hidden' : ''}">
       <div id="scrolliris_header">
         <div class="header">
           <h1 style="font-family:monospace;">READABILITY HEATMAP</h1>
@@ -333,7 +338,7 @@ function toggleItem(slf, e) {
 <body>
   <div id="scrolliris_widget">
     <div id="scrolliris_item_container"
-      class="ext${itm.state === 'hidden' ? ' hidden' : ''}"
+      class="overlay${itm.state === 'hidden' ? ' hidden' : ''}"
     onclick="return toggleItem(null, event);">
       <div id="scrolliris_overlay_container"></div>
     </div>
