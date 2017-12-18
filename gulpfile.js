@@ -132,6 +132,35 @@ gulp.task('build:minify:minimap', function () {
     ]);
 });
 
+// reflector-overlay.js (overlay extension)
+gulp.task('build:browserify:overlay',
+  runBrowserify('overlay.js', prefix + 'reflector-overlay.js'));
+
+gulp.task('build:compileCSS:overlay', function () {
+  return gulp.src('./src/overlay.styl')
+    .pipe(stylus())
+    .pipe(rename(function(file) {
+      file.basename = prefix + 'reflector-overlay';
+    }))
+    .pipe(gulp.dest('./dst/'));
+});
+
+gulp.task('build:uglify:overlay',
+  runUglify(prefix + 'reflector-overlay.js'));
+
+gulp.task('build:minify:overlay', function () {
+  return pump([
+      gulp.src(['./dst/' + prefix + 'reflector-overlay.css'])
+    , sourcemaps.init({
+        loadMaps: true
+      })
+    , minify({compatibility: 'ie8'})
+    , rename({suffix: '.min'})
+    , sourcemaps.write('./')
+    , gulp.dest('./dst')
+    ]);
+});
+
 // build entry point
 gulp.task('build:index', ['env'], function() {
   return sequence(
@@ -156,10 +185,20 @@ gulp.task('build:minimap', ['env'], function() {
   );
 });
 
+gulp.task('build:overlay', ['env'], function() {
+  return sequence(
+    'build:browserify:overlay'
+  , 'build:uglify:overlay'
+  , 'build:compileCSS:overlay'
+  , 'build:minify:overlay'
+  );
+});
+
 gulp.task('build', [
   'build:browser'
 , 'build:index'
 , 'build:minimap'
+, 'build:overlay'
 ]);
 
 
@@ -259,6 +298,11 @@ var paths = {
   ]
 , minimap: [
     path.join('src', 'minimap.*')
+  , path.join('src', 'util.js')
+  ]
+, overlay: [
+    path.join('src', 'overlay.*')
+  , path.join('src', 'util.js')
   ]
 };
 
@@ -268,6 +312,7 @@ gulp.task('watch', ['env'], function() {
   gulp.watch(paths.browser, ['build:browser', 'build:index']);
   gulp.watch(paths.index, ['build:index', 'build:browser']);
   gulp.watch(paths.minimap, ['build:minimap']);
+  gulp.watch(paths.overlay, ['build:overlay']);
 });
 
 

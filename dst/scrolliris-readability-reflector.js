@@ -19,6 +19,11 @@ var Widget = function () {
 
     this.config = config;
     this.context = context;
+
+    this._iconMargin = 4;
+    this._iconWidth = 48;
+    this._minimapWidth = 260;
+    this._minimapHeight = 400;
   }
 
   _createClass(Widget, [{
@@ -26,20 +31,32 @@ var Widget = function () {
     value: function render() {
       var ctx = this.context;
       var settings = ctx.settings || {},
-          options = ctx.options || { 'widget': 'active' };
+          options = ctx.options || { widget: {
+          extension: 'minimap',
+          initialState: 'inactive'
+        } };
 
-      var _buildComponents2 = this._buildComponents(options.widget),
-          _buildComponents3 = _slicedToArray(_buildComponents2, 3),
-          frm = _buildComponents3[0],
-          map = _buildComponents3[1],
-          btn = _buildComponents3[2];
+      if (options.widget.extension in ['minimap', 'overlay'] || options.widget.initialState in ['active', 'inactive']) {
+        return;
+      }
 
-      this._insertStyle(frm);
+      var _buildProperties2 = this._buildProperties(options.widget.initialState, options.widget.extension),
+          _buildProperties3 = _slicedToArray(_buildProperties2, 2),
+          itm = _buildProperties3[0],
+          btn = _buildProperties3[1];
+
+      // css
+
+
+      var style = document.createElement('style');
+      style.type = 'text/css';
+      style.appendChild(document.createTextNode(this._buildStyle(itm)));
+
+      var h = document.getElementsByTagName('head')[0];
+      h.appendChild(style);
 
       /**
        * NOTE:
-       *
-       * DOM Structure
        *
        * div#scrolliris_container
        *   iframe#scrolliris_frame
@@ -47,92 +64,132 @@ var Widget = function () {
        *       body
        *         div#scrolliris_widget
        *           div#scrolliris_icon_container
-       *           (minimap)
-       *           div#scrolliris_minimap_container
-       *             div#scrolliris_minimap_canvas_container
-       *           (overlay)
-       *           none
+       *           div#scrolliris_item_container
+       *             div#scrolliris_(minimap|overlay)_container
       */
 
       // iframe
       var iframe = document.createElement('iframe');
       iframe.setAttribute('id', 'scrolliris_frame');
 
-      // iframe container
       var container = document.createElement('div');
       container.setAttribute('id', 'scrolliris_container');
       container.appendChild(iframe);
       document.body.appendChild(container);
 
-      var currentScript = ctx.currentScript || document.currentScript,
-          scriptSrc = currentScript.getAttribute('src') || '';
-      // This part assumes -(minimap|overlay).(js|css) are both hosted in
-      // same location as current script.
-      //
-      // reflector.js         --> reflector-(minimap|overlay).js,.css
-      // reflector-browser.js --> reflector-(minimap|overlay).js,.css
-      var reflectorJSRegex = /(-browser)?(\.min)?\.js(\?)?/;
-      var src = {};
+      var widget = this._buildWidget(options.widget.extension, itm, btn, ctx, settings);
 
-      // -- minimap
-      src.js = settings.hasOwnProperty('minimap') ? settings.minimap.js : scriptSrc.replace(reflectorJSRegex, '-minimap$2.js$3').toString();
-      src.css = settings.hasOwnProperty('minimap') ? settings.minimap.css : scriptSrc.replace(reflectorJSRegex, '-minimap$2.css$3').toString();
-
-      if (src.js === '' || src.css === '') {
-        console.error('widget source (js|css) is missing');
-      }
-
-      // -- overlay
-      // TODO
-
-      var widget = this._makeMinimap(btn, map, src.js, src.css);
-
-      iframe.contentWindow.ScrollirisReadabilityReflector = {
-        Context: ctx
-      };
+      iframe.contentWindow.ScrollirisReadabilityReflector = { Context: ctx };
       iframe.contentWindow.document.open();
       iframe.contentWindow.document.write(widget);
       iframe.contentWindow.document.close();
     }
   }, {
-    key: '_insertStyle',
-    value: function _insertStyle(frm) {
-      var cssContent = '\n#scrolliris_container {\n  position: fixed;\n  margin: 0;\n  padding: 0;\n  width: auto;\n  height: auto;\n  left: 0px;\n  bottom: 0px;\n  z-index: 9999999 !important;\n}\n\n#scrolliris_frame {\n  z-index: 9999999 !important;\n  position: fixed !important;\n  margin: 0;\n  padding: 0;\n  width: ' + frm.width + 'px;\n  height: ' + frm.height + 'px;\n  left: 9px;\n  bottom: 9px;\n  border: 0;\n}\n';
-
-      var style = document.createElement('style');
-      style.type = 'text/css';
-      style.appendChild(document.createTextNode(cssContent));
-
-      var h = document.getElementsByTagName('head')[0];
-      h.appendChild(style);
+    key: '_buildStyle',
+    value: function _buildStyle(itm) {
+      var width = itm.state === 'block' ? itm.width : 'auto',
+          height = itm.state === 'block' ? itm.height : 'auto';
+      return '\n#scrolliris_container {\n  margin: 0;\n  padding: 0;\n  padding-left: 6px !important;\n  padding-bottom: 6px !important;\n  width: auto;\n  height: auto;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 2147483647;\n}\n\n#scrolliris_frame {\n  margin: 0;\n  padding: 0;\n  width: ' + width + ';\n  height: ' + height + ';\n  border: 0;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 2147483647;\n}\n';
     }
   }, {
-    key: '_buildComponents',
-    value: function _buildComponents(widgetState) {
-      var map = {
-        state: widgetState === 'inactive' ? 'hidden' : 'block',
-        width: '260',
-        height: '400'
-      },
-          btn = {
-        state: widgetState === 'inactive' ? 'block' : 'hidden',
-        width: '48',
-        height: '48',
-        src: 'https://img.scrolliris.com/icon/scrolliris-logo-white-64x64.png'
+    key: '_getWinHeight',
+    value: function _getWinHeight() {
+      return window.innerHeight || (document.documentElement || document.body).clientHeight;
+    }
+  }, {
+    key: '_getDocHeight',
+    value: function _getDocHeight() {
+      return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
+    }
+  }, {
+    key: '_buildProperties',
+    value: function _buildProperties(initialState, extension) {
+      var itm = void 0;
+      if (extension === 'overlay') {
+        itm = {
+          class: 'overlay',
+          state: initialState === 'inactive' ? 'hidden' : 'block',
+          width: '100%',
+          height: document.body.scrollHeight + (
+          // remains scrollable length
+          this._getDocHeight() - this._getWinHeight()) + 'px'
+        };
+      } else {
+        // minimap (default)
+        itm = {
+          class: 'minimap',
+          state: initialState === 'inactive' ? 'hidden' : 'block',
+          width: this._minimapWidth + 'px',
+          height: this._minimapHeight + 'px'
+        };
+      }
+      var cdn = 'https://img.scrolliris.com/';
+      var btn = {
+        state: initialState === 'inactive' ? 'block' : extension === 'overlay' ? 'block' : 'hidden'
+        // button image size (width, height)
+        , width: this._iconWidth - this._iconMargin / 2 + 'px',
+        height: this._iconWidth - this._iconMargin / 2 + 'px',
+        src: {
+          on: cdn + 'icon/scrolliris-logo-white-64x64.png',
+          off: cdn + 'icon/scrolliris-logo-none-64x64.png'
+        }
+      };
+      return [itm, btn];
+    }
+  }, {
+    key: '_buildWidget',
+    value: function _buildWidget(extension, itm, btn, ctx, settings) {
+      var currentScript = ctx.currentScript || document.currentScript,
+          scriptSrc = currentScript.getAttribute('src') || '';
+
+      // This part assumes -(minimap|overlay).(js|css) are both hosted in
+      // same location as current js script.
+      //
+      // reflector.js         --> reflector-(minimap|overlay).js,.css
+      // reflector-browser.js --> reflector-(minimap|overlay).js,.css
+      var reflectorJSRegex = /(-browser)?(\.min)?\.js(\?)?/;
+
+      function getRemote(name, ext) {
+        return settings.hasOwnProperty(name) ? settings[name][ext] : scriptSrc.replace(reflectorJSRegex, '-' + name + '$2.' + ext + '$3').toString();
+      }
+
+      var src = {
+        js: getRemote(extension, 'js'),
+        css: getRemote(extension, 'css')
       };
 
-      var frm = {
-        width: map.state === 'hidden' ? btn.width : map.width,
-        height: map.state === 'hidden' ? btn.height : map.height
-      };
+      if (src.js === '' || src.css === '') {
+        console.error('widget:' + extension + ' No such extension');
+      }
 
-      return [frm, map, btn];
+      function capitalize(str) {
+        return str && str[0].toUpperCase() + str.slice(1);
+      }
+
+      // call _make(Minimap|Overlay) function
+      return this['_make' + capitalize(extension)](itm, btn, src.js, src.css);
+    }
+  }, {
+    key: '_buildStyleForWidget',
+    value: function _buildStyleForWidget() {
+      return '\nhtml,\nbody {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n}\n\n*:focus {\n  outline: none;\n}\n\n*::-moz-focus-inner {\n  border: 0;\n}\n\n#scrolliris_item_container {\n  width: auto;\n  height: auto;\n  position: fixed;\n  top: 0;\n  left: 0;\n}\n\n#scrolliris_icon_container {\n  width: auto;\n  height: auto;\n  position: fixed;\n  left: 6px;\n  bottom: 6px !important;\n  z-index: 1;\n  display: block;\n}\n\n#scrolliris_icon_container .btn,\n#scrolliris_item_container .btn {\n  cursor: pointer;\n  margin: 0;\n  padding: 0;\n  outline: 0;\n  outline-style: none;\n  border: 0;\n  background: none;\n  box-shadow: none;\n  appearance: none;\n  -moz-appearance: none;\n  -webkit-appearance: none;\n}\n\n.hidden {\n  display: none;\n  opacity: 0;\n}\n\n#scrolliris_widget {\n  margin: 0;\n  padding: 0;\n  width: auto;\n  height: auto;\n}';
+    }
+  }, {
+    key: '_buildScriptForWidget',
+    value: function _buildScriptForWidget(itm, btn) {
+      return '\nfunction _resetWidget(itm) {\n  var frm = window.parent.document.getElementById(\'scrolliris_frame\');\n  if (itm.classList.contains(\'hidden\')) {\n    frm.style.width = \'auto\';\n    frm.style.height = \'auto\';\n    itm.style.width = \'0px\';\n    itm.style.height = \'0px\';\n  } else {\n    frm.style.width = \'' + (itm.class === 'overlay' ? '100%' : itm.width) + '\';\n    frm.style.height = \'' + (itm.class === 'overlay' ? '100%' : itm.height) + '\';\n    itm.style.width = \'' + itm.width + '\';\n    itm.style.height = \'' + itm.height + '\';\n  }\n}\n\nfunction toggleItem(slf, e) {\n  e.preventDefault();\n  var itm = document.getElementById(\'scrolliris_item_container\');\n  itm.classList.toggle(\'hidden\');\n  _resetWidget(itm);\n  var icn = document.getElementById(\'scrolliris_icon_container\')\n    ;\n  if (itm.classList.contains(\'overlay\')) {\n    var img = icn.querySelector(\'img\');\n    if (itm.classList.contains(\'hidden\')) {\n      img.setAttribute(\'src\', \'' + btn.src.on + '\');\n    } else {\n      img.setAttribute(\'src\', \'' + btn.src.off + '\');\n    }\n  } else if (itm.classList.contains(\'minimap\')) {\n    var btn = icn.querySelector(\'button\');\n    btn.classList.toggle(\'hidden\');\n  }\n}';
     }
   }, {
     key: '_makeMinimap',
-    value: function _makeMinimap(btn, map, js, css) {
-      var content = '\n<head>\n  <meta charset="utf-8">\n  <style>\nbody {\n  margin: 0;\n  padding: 0;\n}\n\n:focus {\n  outline: none;\n}\n\n::-moz-focus-inner {\n  border: 0;\n}\n\n#scrolliris_icon_container .btn,\n#scrolliris_minimap_container .btn {\n  cursor: pointer;\n  margin: 0;\n  padding: 0;\n  outline: 0;\n  outline-style: none;\n  border: 0;\n  background: none;\n  box-shadow: none;\n  appearance: none;\n  -moz-appearance: none;\n  -webkit-appearance: none;\n}\n\n.hidden {\n  display: none;\n  border: 0;\n  width: 0;\n  height: 0;\n}\n\n#scrolliris_widget {\n  margin: 0;\n  padding: 0;\n  width: auto;\n  height: auto;\n}\n\n#scrolliris_widget .icon {\n  margin: 0;\n  padding: 0;\n}\n\n#scrolliris_minimap_container {\n  background-color: #ffffff;\n  max-width: 260px;\n  max-height: 400px;\n  border: 1px solid rgba(51, 51, 51, 0.18);\n  border-radius: 1px;\n}\n  </style>\n  <link rel="stylesheet" href="' + css + '">\n</head>\n<body>\n  <div id="scrolliris_widget">\n    <div id="scrolliris_icon_container">\n      <button type="button" class="btn ' + btn.state + '" onclick="return toggleMinimap(this, event);">\n        <img class="icon" src="' + btn.src + '" alt="Scrolliris Icon" width="' + btn.width + '" height="' + btn.height + '"></button>\n    </div>\n    <div id="scrolliris_minimap_container" class="' + map.state + '">\n      <div id="scrolliris_header">\n        <div class="header">\n          <h1 style="font-family:monospace;">READABILITY HEATMAP</h1>\n          <button type="button" class="btn close" onclick="return toggleMinimap(null, event)">\xD7</button>\n        </div>\n      </div>\n      <div id="scrolliris_minimap_canvas_container"></div>\n      <div id="scrolliris_footer">\n        <p class="txt">Powered by <a href="https://about.scrolliris.com/" target="_blank">Scrolliris</a></p>\n      </div>\n    </div>\n  </div>\n  <script async src="' + js + '"></script>\n  <script>\nfunction _resetMinimap(minimap) {\n  var frame = window.parent.document.getElementById(\'scrolliris_frame\');\n  if (minimap.classList.contains(\'hidden\')) {\n    frame.setAttribute(\'style\', \'height:48px;width:48px;\');\n  } else {\n    frame.setAttribute(\'style\', \'height:400px;width:260px;\');\n  }\n}\n\nfunction toggleMinimap(self, e) {\n  e.preventDefault();\n  var minimap = document.getElementById(\'scrolliris_minimap_container\');\n  minimap.classList.toggle(\'hidden\');\n  _resetMinimap(minimap);\n  if (self !== null) {\n    self.classList.toggle(\'hidden\');\n  } else {\n    var icon = document.getElementById(\'scrolliris_icon_container\')\n      , btn = icon.querySelector(\'button\')\n    ;\n    btn.classList.toggle(\'hidden\');\n  }\n}\n  </script>\n</body>\n';
-      return content.replace(/\n\s*/g, '');
+    value: function _makeMinimap(itm, btn, js, css) {
+      var content = '\n<head>\n  <meta charset="utf-8">\n  <style>' + this._buildStyleForWidget() + '</style>\n  <link rel="stylesheet" href="' + css + '">\n</head>\n<body>\n  <div id="scrolliris_widget">\n    <div id="scrolliris_item_container"\n      class="minimap' + (itm.state === 'hidden' ? ' hidden' : '') + '">\n      <div id="scrolliris_header">\n        <div class="header">\n          <h1 style="font-family:monospace;">READABILITY HEATMAP</h1>\n          <button type="button"\n                 class="btn close"\n               onclick="return toggleItem(null, event)">\xD7</button>\n        </div>\n      </div>\n      <div id="scrolliris_minimap_container"></div>\n      <div id="scrolliris_footer">\n        <p class="txt">Powered by <a href="https://about.scrolliris.com/"\n                                   target="_blank">Scrolliris</a></p>\n      </div>\n    </div>\n    <div id="scrolliris_icon_container">\n      <button type="button"\n             class="btn' + (btn.state === 'hidden' ? ' hidden' : '') + '"\n           onclick="return toggleItem(this, event);">\n        <img class="icon"\n               src="' + btn.src.on + '"\n               alt="Scrolliris Icon"\n             width="' + btn.width + '"\n            height="' + btn.height + '"></button>\n    </div>\n  </div>\n  <script async src="' + js + '"></script>\n  <script>' + this._buildScriptForWidget(itm, btn) + '</script>\n</body>';
+      return content.replace(/\n\s*|([\:;,"]|\)|}|if|else)\s+(\(|else|{)?/g, '$1$2');
+    }
+  }, {
+    key: '_makeOverlay',
+    value: function _makeOverlay(itm, btn, js, css) {
+      var content = '\n<head>\n  <meta charset="utf-8">\n  <style>' + this._buildStyleForWidget() + '</style>\n  <link rel="stylesheet" href="' + css + '">\n</head>\n<body>\n  <div id="scrolliris_widget">\n    <div id="scrolliris_item_container"\n      class="overlay' + (itm.state === 'hidden' ? ' hidden' : '') + '"\n    onclick="return toggleItem(null, event);">\n      <div id="scrolliris_overlay_container"></div>\n    </div>\n    <div id="scrolliris_icon_container">\n      <button type="button"\n             class="btn' + (btn.state === 'hidden' ? ' hidden' : '') + '"\n           onclick="return toggleItem(this, event);">\n        <img class="icon"\n               src="' + (itm.state === 'hidden' ? btn.src.on : btn.src.off) + '"\n               alt="Scrolliris Icon"\n             width="' + btn.width + '"\n            height="' + btn.height + '"></button>\n    </div>\n  </div>\n  <script async src="' + js + '"></script>\n  <script>' + this._buildScriptForWidget(itm, btn) + '</script>\n</body>';
+      return content.replace(/\n\s*|([\:;,"]|\)|}|if|else)\s+(\(|else|{)?/g, '$1$2');
     }
   }]);
 

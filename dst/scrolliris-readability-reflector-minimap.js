@@ -7004,15 +7004,10 @@ exports.serializeToString = function (node) {
 },{}],41:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _rasterizehtml = require('rasterizehtml');
-
-var _rasterizehtml2 = _interopRequireDefault(_rasterizehtml);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function shadeColor(color, percent) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function _shadeColor(color, percent) {
   var f = parseInt(color.slice(1), 16),
       t = percent < 0 ? 0 : 255,
       p = percent < 0 ? percent * -1 : percent;
@@ -7032,6 +7027,16 @@ function collectElements(article, selectors) {
     q += ',' + (selectors[key] || d[1]);
   });
   return article.querySelectorAll(q.slice(1));
+}
+
+function getStyle(e, prop) {
+  var s = void 0;
+  if (e.currentStyle) {
+    s = e.currentStyle[prop];
+  } else if (window.getComputedStyle) {
+    s = document.defaultView.getComputedStyle(e, null).getPropertyValue(prop);
+  }
+  return s;
 }
 
 function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback) {
@@ -7077,7 +7082,7 @@ function fetchResultData(endpointURL, csrfToken, resolveCallback, rejectCallback
 
 function buildHTML(data, elements) {
   var html = '<html><head>';
-  html += '\n<style>\n  body {\n    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;\n    font-size: 1.66em;\n  }\n</style>\n';
+  html += '\n<style>\n</style>\n';
   // additional styles
   // html += Array.from([]).map((s) => {
   //   return s.outerHTML;
@@ -7103,9 +7108,9 @@ function buildHTML(data, elements) {
           var color = '#ffffff';
           try {
             var i = Math.round(parseFloat(v) * 10);
-            color = shadeColor(colors[i], 0.55);
-          } catch (_e) {
-            console.error(e);
+            color = _shadeColor(colors[i], 0.55);
+          } catch (err) {
+            console.error(err);
           }
           n.style.background = color;
           n.style.backgroundColor = 'rgba(' + color + ', 0.9)';
@@ -7119,8 +7124,26 @@ function buildHTML(data, elements) {
   return html;
 }
 
+exports.collectElements = collectElements;
+exports.getStyle = getStyle;
+exports.fetchResultData = fetchResultData;
+exports.buildHTML = buildHTML;
+
+},{}],42:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _rasterizehtml = require('rasterizehtml');
+
+var _rasterizehtml2 = _interopRequireDefault(_rasterizehtml);
+
+var _util = require('./_util');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function makeCanvas(width, height) {
-  var container = document.getElementById('scrolliris_minimap_canvas_container'),
+  var container = document.getElementById('scrolliris_minimap_container'),
       canvas = document.createElement('canvas');
   canvas.setAttribute('id', 'scrolliris_minimap_canvas');
   canvas.setAttribute('width', width * 0.5);
@@ -7200,7 +7223,7 @@ function drawCanvas(canvas, html, width, height, margin) {
   var article = doc.querySelector(selectors.article || 'body article');
 
   // collect elements
-  var elements = collectElements(article, selectors);
+  var elements = (0, _util.collectElements)(article, selectors);
 
   // TODO:
   // Remove magic number(s)
@@ -7209,21 +7232,21 @@ function drawCanvas(canvas, html, width, height, margin) {
   var docHeight = Math.max(doc.body.scrollHeight, article.scrollHeight, elm.scrollHeight) / 0.5;
 
   var draw = function draw(data) {
-    var html = buildHTML(data, elements),
+    var html = (0, _util.buildHTML)(data, elements),
         canvas = makeCanvas(docWidth, docHeight);
     // draw minimap
     var canvasHeight = 325 // container main area
     ,
         headerHeight = 22,
         footerHeiht = 22,
-        frameMargin = 9 // {left|bottom} 9px
+        frameMargin = 6 // {left|bottom}
     ,
         scale = 0.5;
     var margin = -1 * (docHeight * scale / canvasHeight * 100) + (headerHeight + footerHeiht + frameMargin);
     drawCanvas(canvas, html, docWidth, docHeight, margin);
   };
 
-  fetchResultData(settings.endpointURL, settings.csrfToken, function (data) {
+  (0, _util.fetchResultData)(settings.endpointURL, settings.csrfToken, function (data) {
     // resolve
     draw(data);
   }, function (data) {
@@ -7233,4 +7256,4 @@ function drawCanvas(canvas, html, width, height, margin) {
   });
 })(window.parent.document, (window.ScrollirisReadabilityReflector || {}).Context);
 
-},{"rasterizehtml":7}]},{},[41]);
+},{"./_util":41,"rasterizehtml":7}]},{},[42]);

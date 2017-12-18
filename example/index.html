@@ -71,48 +71,58 @@ body {
     </article>
   </section>
   <script>
-// -- tracker client script
-// dst script (in stäfa)
+// development config
+var projectId = 'PROJECT_ID'
+  , readKey = 'READ_KEY'
+  , writeKey = 'WRITE_KEY'
+  ;
+
+// -- script
 (function(d, w) {
   var config = {
         projectId: 'PROJECT_ID'
       , apiKey: 'WRITE_KEY'
       }
     , settings = {
-        endpointURL: 'http://localhost:3000/track?projectId='+config.projectId+'&api_key='+config.apiKey
+        // ...
+        endpointURL: 'http://localhost:3000/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
       , debug: true
       }
     , options = {}
     ;
-  /* ----- */
-  // local server
-  //var trackerURL = 'http://localhost:8080/projects/'+config.projectId+'/tracker.js?api_key='+config.apiKey;
-  // script
+  /* -- development -- */
+  // schwyz (local server)
+  //var trackerURL = 'http://localhost:8080/projects/'+config.projectId+'/measure.js?api_key='+config.apiKey;
+  // stäfe (local script)
   var trackerURL = '../../staefa/dst/scrolliris-readability-tracker-browser.js';
-  /* ----- */
+  /* -- development -- */
   var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src=trackerURL;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityTracker,t=(new r.Client(config,settings));t.ready(['body'],function(){t.record(options);});}catch(_){}};s.parentNode.insertBefore(k,s);
 })(document, window);
 
-// -- reflector canvas widget
+// -- widget
 (function(d, w) {
   var config = {
-        projectId: 'PROJECT_ID'
-      , apiKey: 'READ_KEY'
+        projectId: projectId
+      , apiKey: readKey
       }
     , settings = {
-        endpointURL: 'http://localhost:3000/fetch?projectId='+config.projectId+'&api_key='+config.apiKey
+        // winterthur
+        endpointURL: 'http://localhost:5000/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
       , debug: false
       }
     , options = {
-        widget: 'inactive'
+        widget: {
+          extension: 'overlay'
+        , initialState: 'inactive'
+        }
       }
     ;
-  /* ----- */
-  // local server
-  //var reflectorURL = 'http://localhost:8080/projects/'+config.projectId+'/reflector.js?api_key='+config.apiKey;
-  // script
+  /* -- development -- */
+  // schwyz (local server)
+  //var reflectorURL = 'http://localhost:8080/projects/'+config.projectId+'/heatmap.js?api_key='+config.apiKey;
+  // sierre (local script)
   var reflectorURL = '../dst/scrolliris-readability-reflector-browser.js';
-  /* ----- */
+  /* -- development -- */
   var a,c=config,f=false,k=d.createElement('script'),s=d.getElementsByTagName('script')[0];k.src=reflectorURL;k.async=true;k.onload=k.onreadystatechange=function(){a=this.readyState;if(f||a&&a!='complete'&&a!='loaded')return;f=true;try{var r=w.ScrollirisReadabilityReflector,t=(new r.Widget(c,{settings:settings,options:options}));t.render();}catch(_){}};s.parentNode.insertBefore(k,s);
 })(document, window);
   </script>
@@ -126,7 +136,7 @@ body {
       , apiKey: 'API_KEY'
       }
     , settings = {
-        endpointURL: 'http://localhost:3000/fetch?projectId='+config.projectId+'&api_key='+config.apiKey
+        endpointURL: 'http://localhost:3000/v1.0/projects/'+config.projectId+'/results/read?api_key='+config.apiKey
       }
     , options = {}
     ;
