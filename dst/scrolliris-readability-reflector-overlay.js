@@ -121,10 +121,46 @@ function buildHTML(data, elements) {
   return html;
 }
 
+function hideLoader(d, w, delay) {
+  var c = void 0,
+      r = function (_d) {
+    return function () {
+      setTimeout(function () {
+        var loader = _d.getElementById('loader'),
+            icon = _d.getElementById('scrolliris_icon_container');
+        loader.classList.add('hidden');
+        icon.classList.remove('hidden');
+      }, delay);
+    };
+  }(d);
+  if (d.addEventListener) {
+    c = function (_c, _d, _r) {
+      return function () {
+        _d.removeEventListener('DOMContentLoaded', _c, false);
+        _r();
+      };
+    }(c, d, r);
+    d.addEventListener('DOMContentLoaded', c, false);
+  } else if (d.attachEvent) {
+    c = function (_c, _d, _r) {
+      return function () {
+        if (_d.readyState === 'complete') {
+          _d.detachEvent('onreadystatechange', _c);
+          _r();
+        }
+      };
+    }(c, d, r);
+    d.attachEvent('onreadystatechange', c);
+  } else {
+    w.onload = r;
+  }
+}
+
 exports.collectElements = collectElements;
 exports.getStyle = getStyle;
 exports.fetchResultData = fetchResultData;
 exports.buildHTML = buildHTML;
+exports.hideLoader = hideLoader;
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -276,6 +312,10 @@ var _util = require('./_util');
     });
   };
 
+  var stopLoader = function stopLoader() {
+    return (0, _util.hideLoader)(doc, win, 1800);
+  };
+
   var run = function run(actions) {
     var result = Promise.resolve();
     actions.forEach(function (action) {
@@ -286,7 +326,7 @@ var _util = require('./_util');
     return result;
   };
 
-  run([putLayer, layElements]);
+  run([putLayer, layElements, stopLoader]);
 })(window, document, (window.ScrollirisReadabilityReflector || {}).Context);
 
 },{"./_util":1}]},{},[2]);
