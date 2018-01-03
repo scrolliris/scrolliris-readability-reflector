@@ -3,6 +3,7 @@ import {
 , getStyle
 , fetchResultData
 , buildHTML
+, hideLoader
 } from './_util';
 
 
@@ -148,6 +149,10 @@ import {
     });
   };
 
+  let stopLoader = () => {
+    return hideLoader(doc, win, 1800);
+  };
+
   let run = (actions) => {
     let result = Promise.resolve();
     actions.forEach((action) => {
@@ -156,7 +161,7 @@ import {
     return result;
   };
 
-  run([putLayer, layElements]);
+  run([putLayer, layElements, stopLoader]);
 })(
   window
 , document

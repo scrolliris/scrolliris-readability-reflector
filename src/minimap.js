@@ -4,6 +4,7 @@ import {
   collectElements
 , fetchResultData
 , buildHTML
+, hideLoader
 } from './_util';
 
 function makeCanvas(width, height) {
@@ -130,3 +131,7 @@ function drawCanvas(canvas, html, width, height, margin) {
   window.parent.document,
   (window.ScrollirisReadabilityReflector || {}).Context
 );
+
+((doc, win) => {
+  return hideLoader(doc, win, 1800);
+})(document, window);

@@ -151,9 +151,47 @@ function buildHTML(data, elements) {
   return html;
 }
 
+function hideLoader(d, w, delay) {
+  let c
+    , r = (function(_d) {
+        return function() {
+          setTimeout(function() {
+            let loader = _d.getElementById('loader')
+              , icon = _d.getElementById('scrolliris_icon_container')
+              ;
+            loader.classList.add('hidden');
+            icon.classList.remove('hidden');
+          }, delay);
+        };
+      })(d)
+      ;
+  if (d.addEventListener) {
+    c = (function(_c, _d, _r) {
+      return function() {
+        _d.removeEventListener('DOMContentLoaded', _c, false);
+        _r();
+      };
+    })(c, d, r);
+    d.addEventListener('DOMContentLoaded', c, false);
+  } else if (d.attachEvent) {
+    c = (function(_c, _d, _r) {
+      return function() {
+        if (_d.readyState === 'complete') {
+          _d.detachEvent('onreadystatechange', _c);
+          _r();
+        }
+      };
+    })(c, d, r);
+    d.attachEvent('onreadystatechange', c);
+  } else {
+    w.onload = r;
+  }
+}
+
 export {
   collectElements
 , getStyle
 , fetchResultData
 , buildHTML
+, hideLoader
 }
