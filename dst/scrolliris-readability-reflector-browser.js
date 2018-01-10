@@ -134,7 +134,7 @@ var Widget = function () {
     value: function _buildStyle(itm) {
       var width = itm.state === 'block' ? itm.width : 'auto',
           height = itm.state === 'block' ? itm.height : 'auto';
-      return '\n#scrolliris_container {\n  margin: 0;\n  padding: 0;\n  padding-left: 6px !important;\n  padding-bottom: 6px !important;\n  width: auto;\n  height: auto;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 2147483647;\n  -webkit-overflow-scrolling: touch;\n  overflow-y: scroll;\n}\n\n#scrolliris_frame {\n  margin: 0;\n  padding: 0;\n  width: ' + width + ';\n  height: ' + height + ';\n  border: 0;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 2147483647;\n}\n';
+      return '\n#scrolliris_container {\n  margin: 0;\n  padding: 0;\n  padding-left: 6px !important;\n  padding-bottom: 6px !important;\n  width: auto;\n  height: auto;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 2147483647;\n  -webkit-overflow-scrolling: touch;\n}\n\n#scrolliris_frame {\n  margin: 0;\n  padding: 0;\n  width: ' + width + ';\n  height: ' + height + ';\n  border: 0;\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 2147483647;\n}\n';
     }
   }, {
     key: '_getWinHeight',
