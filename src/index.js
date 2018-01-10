@@ -83,7 +83,6 @@ class Widget {
   bottom: 0;
   z-index: 2147483647;
   -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
 }
 
 #scrolliris_frame {
