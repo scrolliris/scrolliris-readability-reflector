@@ -1,3 +1,7 @@
+Wed 10 Jan 2018 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
+	* Release 0.0.26
+	* Fix scroll event for iframe on modile safari
+
 Thu 04 Jan 2018 Yasuhiro Asaka <yasuhiro.asaka@grauwoelfchen.net>
 	* Release 0.0.25
 	* Make widget icon as base64 image text
