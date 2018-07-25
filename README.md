@@ -1,11 +1,17 @@
-# Sierre
+# Scrolliris Readability Reflector
 
-`/syĕr/`
+Code Name: `Sierre /syĕr/`
 
 [![pipeline status][pipeline]][commit] [![coverage report][coverage]][commit]
 [![npm version][version]][npm]
 
-![Sierre Widget](example/img/sierre-widget.png)  
+[pipeline]: https://gitlab.com/scrolliris/scrolliris-readability-reflector/badges/master/pipeline.svg
+[coverage]: https://gitlab.com/scrolliris/scrolliris-readability-reflector/badges/master/coverage.svg
+[commit]: https://gitlab.com/scrolliris/scrolliris-readability-reflector/commits/master
+[version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
+[npm]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector
+
+![Minimap Widget](example/img/sierre-widget.png)  
 (minimap)
 
 ```txt
@@ -18,11 +24,11 @@
 Sierre; ScrollirIs honEst Readability REflector
 ```
 
-**Sierre** idnicates text readability heatmap data which is tracked based on
-the scroll event in a gentlemanly manner by [Stäfa](
-https://gitlab.com/scrolliris/staefa).
+**Scrolliris Readability Reflector (Sierre)** idnicates text readability
+heatmap data which is tracked based on the scroll event in a gentlemanly manner by
+[Scrolliris Readability Tracker (Stäfa)](https://gitlab.com/scrolliris/scrolliris-readability-tracker).
 
-This project is text readibility indicator by [Scrolliris](
+This project is text readability indicator by [Scrolliris](
 https://about.scrolliris.com).  
 It's called *Scrolliris Readability Reflector* as formal.
 
@@ -31,7 +37,7 @@ There are 2 extensions `minimap` and `overlay` which are built using iframe.
 
 ## Repository
 
-https://gitlab.com/scrolliris/sierre
+https://gitlab.com/scrolliris/scrolliris-readability-reflector
 
 
 ## Requirements
@@ -44,7 +50,7 @@ https://gitlab.com/scrolliris/sierre
 
 ```zsh
 : via npm
-% npm install @lupine-software/scrolliris-readibility-reflector
+% npm install @lupine-software/scrolliris-readability-reflector
 ```
 
 ## Configuration
@@ -91,7 +97,7 @@ settings takes...
 ## License
 
 ```txt
-Sierre
+Scrolliris Readability Reflector
 Copyright (c) 2017 Lupine Software LLC
 ```
 
@@ -116,10 +122,3 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 ```
 
 See [LICENSE](LICENSE).
-
-
-[pipeline]: https://gitlab.com/scrolliris/sierre/badges/master/pipeline.svg
-[coverage]: https://gitlab.com/scrolliris/sierre/badges/master/coverage.svg
-[commit]: https://gitlab.com/scrolliris/sierre/commits/master
-[version]: https://img.shields.io/npm/v/@lupine-software/scrolliris-readability-reflector.svg
-[npm]: https://www.npmjs.com/package/@lupine-software/scrolliris-readability-reflector
